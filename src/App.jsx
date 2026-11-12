@@ -91,7 +91,7 @@ function MaxIcon({ className }) {
 }
 function MessengerButtons({ className, stack }) {
   // кнопки всегда одной ширины: на телефоне — во всю ширину одна под другой, на компьютере — две равные колонки
-  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-white px-4 text-sm font-semibold shadow-card hover:bg-gray-1'
+  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-white px-4 text-sm font-semibold shadow-sm hover:bg-gray-1'
   return (
     <div className={cn('grid gap-2', !stack && 'sm:w-fit sm:grid-cols-2', className)}>
       <a href={contacts.telegram} target="_blank" rel="noopener nofollow" className={c}><TgIcon className="size-5" /> Написать в Telegram</a>
