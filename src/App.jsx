@@ -504,7 +504,7 @@ function Checks() {
 
 function PostCard({ p, H = 'h3' }) {
   return (
-    <Link to={`blog/${p.slug}/`} className="group flex min-w-[260px] flex-col overflow-hidden lg:min-w-0 rounded-[2px] border border-gray-2 bg-white text-left transition hover:shadow-card">
+    <Link to={`blog/${p.slug}/`} className="group flex min-w-[260px] flex-col lg:min-w-0 rounded-[2px] border border-gray-2 bg-white text-left transition hover:shadow-card">
       <div className={cn('flex h-[150px] items-end justify-center overflow-hidden', p.tone)}>
         <img src={img(p.img)} {...IMG} loading="lazy" alt="" className="h-[130px] w-auto transition group-hover:scale-105" />
       </div>
@@ -648,13 +648,13 @@ function FaqList({ limit, as = 'h2', title = 'Частые вопросы' }) {
   return (
     <section className="wrap py-16">
       <SectionTitle as={as}>{title}</SectionTitle>
-      <div className="mt-6 max-w-[900px] divide-y divide-gray-2 border-y border-gray-2">
+      <div className="mt-6 divide-y divide-gray-2 border-y border-gray-2">
         {list.map((f) => (
           <details key={f.q} className="group">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left text-[17px] font-semibold [&::-webkit-details-marker]:hidden">
               {f.q}<Plus className="size-5 shrink-0 transition group-open:rotate-45" />
             </summary>
-            <p className="pb-5 text-[15px] leading-relaxed text-txt-2">{f.a}</p>
+            <p className="max-w-[720px] pb-5 text-[15px] leading-relaxed text-txt-2">{f.a}</p>
           </details>
         ))}
       </div>
