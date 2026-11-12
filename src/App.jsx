@@ -75,7 +75,7 @@ function Shell() {
 function TgIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <circle cx="12" cy="12" r="12" fill="#27a6e5" />
+      <rect width="24" height="24" rx="7" fill="#27a6e5" />
       <path d="M5.4 11.7l11.1-4.3c.5-.2 1 .1.8.9l-1.9 8.9c-.1.6-.5.8-1 .5l-2.8-2.1-1.4 1.3c-.2.2-.3.3-.6.3l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.6l-2.8-.9c-.6-.2-.6-.6.1-.9z" fill="#fff" />
     </svg>
   )
@@ -83,15 +83,14 @@ function TgIcon({ className }) {
 function MaxIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <defs><linearGradient id="mx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4cc3ff" /><stop offset=".55" stopColor="#5b5cf6" /><stop offset="1" stopColor="#a93cf0" /></linearGradient></defs>
-      <rect width="24" height="24" rx="7" fill="url(#mx)" />
+      <rect width="24" height="24" rx="7" fill="#6a5cf6" />
       <path d="M12 5.5a6.5 6.5 0 0 0-5.6 9.8L5.6 18.4l3.2-.8A6.5 6.5 0 1 0 12 5.5z" fill="#fff" />
     </svg>
   )
 }
 function MessengerButtons({ className, stack }) {
   // кнопки всегда одной ширины: на телефоне — во всю ширину одна под другой, на компьютере — две равные колонки
-  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-white px-4 text-sm font-semibold shadow-sm hover:bg-gray-1'
+  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-gray-1 px-4 text-sm font-semibold hover:bg-gray-2'
   return (
     <div className={cn('grid gap-2', !stack && 'sm:w-fit sm:grid-cols-2', className)}>
       <a href={contacts.telegram} target="_blank" rel="noopener nofollow" className={c}><TgIcon className="size-5" /> Написать в Telegram</a>
@@ -440,7 +439,7 @@ function Buy({ p, v, qty, big }) {
   return qty ? (
     <div className={cn('flex items-center justify-between rounded-[2px] bg-gray-1', big ? 'h-[52px]' : 'h-11')}>
       <button className="flex size-11 items-center justify-center" onClick={() => st.setQty(`${p.id}|${v.w}`, qty - 1)} aria-label="Меньше"><Minus className="size-4" /></button>
-      <span className="text-sm font-semibold">{qty} в корзине</span>
+      <span className="text-sm font-semibold tabular-nums">{qty}</span>
       <button className="flex size-11 items-center justify-center" onClick={() => st.setQty(`${p.id}|${v.w}`, qty + 1)} aria-label="Больше"><Plus className="size-4" /></button>
     </div>
   ) : (
@@ -507,7 +506,7 @@ function PostCard({ p, H = 'h3' }) {
   return (
     <Link to={`blog/${p.slug}/`} className="group flex min-w-[260px] flex-col overflow-hidden lg:min-w-0 rounded-[2px] border border-gray-2 bg-white text-left transition hover:shadow-card">
       <div className={cn('flex h-[150px] items-end justify-center overflow-hidden', p.tone)}>
-        <img src={img(p.img)} {...IMG} loading="lazy" alt="" className="h-[130px] w-auto translate-y-3 transition group-hover:translate-y-0" />
+        <img src={img(p.img)} {...IMG} loading="lazy" alt="" className="h-[130px] w-auto transition group-hover:scale-105" />
       </div>
       <div className="flex flex-1 flex-col p-5">
         <span className="w-fit rounded-full bg-gray-1 px-2.5 py-0.5 text-xs lowercase">{p.tag}</span>
@@ -952,7 +951,7 @@ function Messengers() {
     document.addEventListener('keydown', esc)
     return () => { document.removeEventListener('pointerdown', out); document.removeEventListener('keydown', esc) }
   }, [open])
-  const item = 'flex w-full items-center gap-2 rounded-full bg-white py-2 pl-2 pr-4 text-sm font-semibold shadow-[0_6px_24px_rgba(46,44,56,.2)] hover:bg-gray-1'
+  const item = 'flex w-full items-center gap-2 rounded-full bg-white py-2 pl-2 pr-4 text-sm font-semibold hover:bg-gray-1'
   return (
     <div ref={box} className={cn('fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2 transition-[bottom]', lifted && 'max-sm:bottom-[76px]')}>
       {open && (
