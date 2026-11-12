@@ -285,7 +285,7 @@ function Home({ filter, setFilter, nav, topic, setTopic }) {
 function Hero({ nav }) {
   return (
     <section className="wrap pt-5">
-      <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 overflow-hidden border border-ink bg-white px-4 py-5 sm:block sm:px-6 sm:py-10 md:px-14 md:py-14">
+      <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 overflow-hidden border border-ink bg-white px-4 py-5 sm:block sm:min-h-[300px] sm:px-6 sm:py-10 md:min-h-[360px] md:px-14 md:py-14 xl:min-h-[440px]">
         <div className="contents sm:relative sm:z-10 sm:block sm:max-w-[380px] xl:max-w-[560px]">
           <span className="kicker hidden text-red sm:inline-block">Бесплатная доставка по СПб</span>
           <h1 className="col-span-2 text-balance text-[22px] font-extrabold leading-[1.15] tracking-tight [overflow-wrap:anywhere] sm:mt-5 sm:text-[32px] sm:leading-[1.1] xl:text-[54px]">Корма Nateria для кошек и собак в Санкт-Петербурге</h1>
@@ -298,9 +298,9 @@ function Hero({ nav }) {
             <Link to={kinds.dog.path} className="flex h-10 items-center justify-center rounded-[2px] border border-ink bg-white px-3 text-[14px] font-semibold hover:bg-gray-1 sm:h-[52px] sm:px-7 sm:text-base">Корм для собак</Link>
           </div>
         </div>
-        <div className="pointer-events-none col-start-2 row-span-2 row-start-2 mt-2 flex shrink-0 sm:hidden md:flex items-center justify-center sm:absolute sm:mt-0 sm:inset-x-0 sm:bottom-0 sm:top-0 sm:items-end sm:justify-end sm:pb-6 sm:pr-12 md:pr-12">
-          <img src={img('cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[68px] drop-shadow-lg sm:w-[120px] xl:w-[190px]" />
-          <img src={img('dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-2 h-auto w-[68px] drop-shadow-lg sm:ml-3 sm:w-[120px] xl:w-[190px]" />
+        <div className="pointer-events-none col-start-2 row-span-2 row-start-2 mt-2 flex shrink-0 sm:hidden md:flex items-end justify-center sm:absolute sm:mt-0 sm:inset-x-0 sm:bottom-0 sm:top-0 sm:items-end sm:justify-end sm:pb-0 sm:pr-4 md:pr-6">
+          <img src={img('cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[110px] drop-shadow-lg sm:w-[200px] md:w-[240px] xl:w-[320px]" />
+          <img src={img('dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-1 h-auto w-[110px] drop-shadow-lg sm:ml-2 sm:w-[200px] md:w-[240px] xl:w-[320px]" />
                   </div>
       </div>
       <div className="no-scrollbar mt-3 grid grid-flow-col gap-3 overflow-x-auto md:grid-cols-4">
