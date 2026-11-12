@@ -402,10 +402,12 @@ function ProductCard({ p }) {
   const compared = st.compare.includes(p.id)
   return (
     <article className="flex flex-col rounded-[2px] bg-white p-3 shadow-card sm:p-4">
-      <div className={cn('relative flex h-[190px] items-center justify-center overflow-hidden rounded-[2px] sm:h-[250px]', p.bg)}>
-        <Link to={productPath(p)} className="flex h-full w-full items-center justify-center p-3 sm:p-4" tabIndex={-1} aria-hidden>
-          <img src={img(p.id)} {...IMG} loading="lazy" alt={`${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain transition hover:scale-105" />
-        </Link>
+      <div className="group relative flex h-[190px] items-center justify-center overflow-hidden rounded-[2px] sm:h-[250px]">
+        <div className={cn('absolute inset-0 flex items-center justify-center p-3 transition group-hover:scale-105 sm:p-4', p.bg)}>
+          <Link to={productPath(p)} className="flex h-full w-full items-center justify-center" tabIndex={-1} aria-hidden>
+            <img src={img(p.id)} {...IMG} loading="lazy" alt={`${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain" />
+          </Link>
+        </div>
         <span className="absolute left-2 top-2 rounded-[2px] border border-ink bg-white/90 px-2 py-1 text-xs font-bold sm:left-3 sm:top-3">{p.kind === 'cat' ? 'Кошкам' : 'Собакам'}</span>
         <FavBtn faved={faved} onClick={() => st.toggleFav(p.id)} />
       </div>
