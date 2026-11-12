@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка А6 v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap');
+
+  /* Трим А6 = 105×148мм. Вылеты 2мм на сторону + отступ от линии реза 3мм = 5мм совокупно. */
+  @page { size: 109mm 152mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 109mm; height: 152mm; font-family: 'Onest', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .page { position: relative; width: 109mm; height: 152mm; overflow: hidden; background: #211f2b; }
+
+  /* декоративное свечение — может уходить в вылет */
+  .glow1 { position: absolute; top: -30mm; right: -25mm; width: 90mm; height: 90mm; border-radius: 50%;
+    background: radial-gradient(circle, rgba(143,130,255,.55) 0%, rgba(143,130,255,0) 70%); }
+  .glow2 { position: absolute; bottom: 10mm; left: -20mm; width: 70mm; height: 70mm; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,106,0,.28) 0%, rgba(255,106,0,0) 70%); }
+
+  .logo { position: absolute; top: 7mm; left: 7mm; display: flex; align-items: center; gap: 2.4mm; }
+  .logo svg { width: 7mm; height: 7mm; }
+  .logo span { font-weight: 800; font-size: 5mm; color: #fff; letter-spacing: -.2px; }
+
+  .headline { position: absolute; top: 18mm; left: 7mm; right: 7mm; font-weight: 800; font-size: 8.4mm; line-height: 1.12; color: #fff; letter-spacing: -.3px; }
+  .headline em { color: #ff6a00; font-style: normal; }
+
+  .card { position: absolute; top: 44mm; left: 5mm; right: 5mm; height: 55mm; background: #fff; border-radius: 5mm;
+    box-shadow: 0 6mm 10mm rgba(0,0,0,.28); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4mm; }
+  .pouches { display: flex; align-items: flex-end; gap: 6mm; }
+  .pouch { width: 25mm; height: 34mm; clip-path: polygon(14% 0%,86% 0%,100% 10%,100% 94%,86% 100%,14% 100%,0% 94%,0% 10%);
+    display: flex; align-items: center; justify-content: center; position: relative; }
+  .pouch.cat { background: linear-gradient(160deg,#ff8a3d,#ff6a00); }
+  .pouch.dog { background: linear-gradient(160deg,#7265ff,#5242d6); }
+  .pouch::before { content:''; position:absolute; top:4.5mm; left:16%; right:16%; height:.6mm; background: rgba(255,255,255,.4); border-radius: 1mm; }
+  .pouch svg { width: 11mm; height: 11mm; fill: #fff; opacity: .95; }
+  .labels { display: flex; gap: 6mm; }
+  .label-col { width: 25mm; text-align: center; }
+  .label-col b { display: block; font-size: 3.5mm; font-weight: 800; color: #211f2b; }
+  .label-col span { display: block; font-size: 3mm; font-weight: 600; color: #8a8694; }
+
+  .pills { position: absolute; top: 103mm; left: 7mm; right: 7mm; display: flex; gap: 2.6mm; }
+  .pill { flex: 1; background: rgba(255,255,255,.08); border: .3mm solid rgba(255,255,255,.18); border-radius: 3mm;
+    padding: 2.6mm 2.4mm; display: flex; align-items: center; gap: 1.8mm; height: 10mm; }
+  .pill .ok { flex: none; width: 4.4mm; height: 4.4mm; border-radius: 50%; background: #8f82ff; color: #fff; font-size: 2.6mm; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; }
+  .pill b { font-size: 3.1mm; font-weight: 700; color: #fff; line-height: 1.18; }
+
+  .cta { position: absolute; left: 5mm; right: 5mm; bottom: 5mm; top: 117mm; background: #ff6a00; border-radius: 5mm;
+    display: flex; align-items: center; gap: 4mm; padding: 4mm; }
+  .cta img { width: 21mm; height: 21mm; border-radius: 2.4mm; background: #fff; padding: 1.4mm; flex: none; }
+  .cta-text b { display: block; font-size: 4mm; font-weight: 800; color: #211f2b; line-height: 1.2; margin-bottom: 1.4mm; }
+  .cta-text span { font-size: 3mm; font-weight: 700; color: #5c2e00; word-break: break-all; }
+
+  .guides .trim { position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; outline: .35mm dashed rgba(255,0,0,.75); z-index: 9; }
+  .guides .safe { position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; outline: .35mm dashed rgba(0,180,255,.9); z-index: 9; }
+  .guides .label { position: absolute; font-family: monospace; font-size: 2.6mm; color: #000; background: #fff; padding: .3mm 1mm; z-index: 10; }
+</style>
+</head>
+<body>
+  <div class="page" id="page">
+    <div class="glow1"></div>
+    <div class="glow2"></div>
+
+    <div class="logo">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="41" r="22.5" fill="#ff6a00"/><g transform="translate(32 41) scale(.9)" fill="#fff">
+        <path d="M0 1.5 C7.5 1.5 12 8 12 12.6 C12 17 8.4 18.6 5.2 17.6 C3 16.9 1.6 16.4 0 16.4 C-1.6 16.4 -3 16.9 -5.2 17.6 C-8.4 18.6 -12 17 -12 12.6 C-12 8 -7.5 1.5 0 1.5 Z"/>
+        <ellipse cx="-13" cy="-3" rx="4.4" ry="5.6" transform="rotate(-24 -13 -3)"/>
+        <ellipse cx="-5" cy="-9.6" rx="4.7" ry="6" transform="rotate(-8 -5 -9.6)"/>
+        <ellipse cx="5" cy="-9.6" rx="4.7" ry="6" transform="rotate(8 5 -9.6)"/>
+        <ellipse cx="13" cy="-3" rx="4.4" ry="5.6" transform="rotate(24 13 -3)"/>
+      </g></svg>
+      <span>Хвостик</span>
+    </div>
+
+    <div class="headline">Порадуем питомца <em>вместе?</em></div>
+
+    <div class="card">
+      <div class="pouches">
+        <div class="pouch cat"><svg viewBox="-20 -20 40 40"><g>
+          <path d="M0 1.5 C7.5 1.5 12 8 12 12.6 C12 17 8.4 18.6 5.2 17.6 C3 16.9 1.6 16.4 0 16.4 C-1.6 16.4 -3 16.9 -5.2 17.6 C-8.4 18.6 -12 17 -12 12.6 C-12 8 -7.5 1.5 0 1.5 Z"/>
+          <ellipse cx="-13" cy="-3" rx="4.4" ry="5.6" transform="rotate(-24 -13 -3)"/>
+          <ellipse cx="-5" cy="-9.6" rx="4.7" ry="6" transform="rotate(-8 -5 -9.6)"/>
+          <ellipse cx="5" cy="-9.6" rx="4.7" ry="6" transform="rotate(8 5 -9.6)"/>
+          <ellipse cx="13" cy="-3" rx="4.4" ry="5.6" transform="rotate(24 13 -3)"/>
+        </g></svg></div>
+        <div class="pouch dog"><svg viewBox="-20 -20 40 40"><g>
+          <path d="M0 1.5 C7.5 1.5 12 8 12 12.6 C12 17 8.4 18.6 5.2 17.6 C3 16.9 1.6 16.4 0 16.4 C-1.6 16.4 -3 16.9 -5.2 17.6 C-8.4 18.6 -12 17 -12 12.6 C-12 8 -7.5 1.5 0 1.5 Z"/>
+          <ellipse cx="-13" cy="-3" rx="4.4" ry="5.6" transform="rotate(-24 -13 -3)"/>
+          <ellipse cx="-5" cy="-9.6" rx="4.7" ry="6" transform="rotate(-8 -5 -9.6)"/>
+          <ellipse cx="5" cy="-9.6" rx="4.7" ry="6" transform="rotate(8 5 -9.6)"/>
+          <ellipse cx="13" cy="-3" rx="4.4" ry="5.6" transform="rotate(24 13 -3)"/>
+        </g></svg></div>
+      </div>
+      <div class="labels">
+        <div class="label-col"><b>Хвостик.МЯУ</b><span>кошкам</span></div>
+        <div class="label-col"><b>Хвостик.ГАВ</b><span>собакам</span></div>
+      </div>
+    </div>
+
+    <div class="pills">
+      <div class="pill"><div class="ok">✓</div><b>Мясо на первом месте</b></div>
+      <div class="pill"><div class="ok">✓</div><b>Доставка бесплатно</b></div>
+    </div>
+
+    <div class="cta">
+      <img src="qr.png" alt="QR-код">
+      <div class="cta-text">
+        <b>Сканируйте — подберите корм за пару минут</b>
+        <span>kirgor32-lgtm.github.io/hvostik-shop</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    if (location.search.includes('guides')) {
+      const p = document.getElementById('page'); p.classList.add('guides')
+      const trim = document.createElement('div'); trim.className = 'trim'; p.appendChild(trim)
+      const safe = document.createElement('div'); safe.className = 'safe'; p.appendChild(safe)
+      const l1 = document.createElement('div'); l1.className='label'; l1.style.top='0'; l1.style.left='2mm'; l1.textContent='линия реза'; p.appendChild(l1)
+      const l2 = document.createElement('div'); l2.className='label'; l2.style.top='5mm'; l2.style.left='5mm'; l2.textContent='зона безопасности'; p.appendChild(l2)
+    }
+  </script>
+</body>
+</html>

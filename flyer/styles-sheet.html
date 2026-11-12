@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — 6 стилей листовки (пробный лист)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=Dela+Gothic+One&family=Unbounded:wght@600;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Rubik+Mono+One&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Onest',sans-serif;background:#d9d6d0;-webkit-font-smoothing:antialiased}
+.sheet{display:grid;grid-template-columns:repeat(3,105mm);gap:12mm 10mm;padding:10mm;width:max-content}
+.cell .cap{margin-top:3mm;font-size:3.6mm;font-weight:700;color:#2e2c38}
+.cell .cap span{font-weight:500;color:#6a6577}
+.f{position:relative;width:105mm;height:148mm;overflow:hidden;box-shadow:0 2mm 6mm rgba(0,0,0,.18)}
+.f img.pk{position:absolute;filter:drop-shadow(0 2mm 2.5mm rgba(0,0,0,.35))}
+.paw{display:inline-block}
+
+/* ===== A. Бренд-постер (Ferrari) ===== */
+.A{background:#141318;color:#fff}
+.A .stripes{position:absolute;right:-30mm;bottom:-10mm;width:110mm;height:80mm;
+  background:repeating-linear-gradient(120deg,transparent 0 9mm,#ff6a00 9mm 11.5mm);opacity:.9;transform:skewY(-8deg)}
+.A .stripes2{position:absolute;left:-30mm;top:-20mm;width:80mm;height:60mm;
+  background:repeating-linear-gradient(120deg,transparent 0 9mm,#3a3742 9mm 11.5mm)}
+.A .word{position:absolute;left:0;right:0;top:16mm;text-align:center;font-family:'Dela Gothic One';font-size:14.6mm;line-height:1;letter-spacing:-.3mm;color:#fff}
+.A .word.o{color:transparent;-webkit-text-stroke:.35mm #fff;top:54mm;opacity:.5}
+.A .pk{height:64mm;top:31mm}
+.A .kick{position:absolute;top:9mm;left:0;right:0;text-align:center;font-size:2.8mm;font-weight:700;letter-spacing:1.2mm;color:#ff8a2a}
+.A .t1{position:absolute;left:0;right:0;top:100mm;text-align:center;font-family:'Dela Gothic One';font-size:6mm;letter-spacing:.3mm}
+.A .t2{position:absolute;left:0;right:0;top:109mm;text-align:center;font-size:3mm;font-weight:600;letter-spacing:.8mm;color:#c9c5d3}
+.A .badge{position:absolute;left:50%;top:118mm;transform:translateX(-50%);width:20mm;height:20mm;border-radius:50%;background:#ff6a00;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;border:.8mm solid #141318;outline:.4mm solid #ff6a00}
+.A .badge b{font-family:'Dela Gothic One';font-size:6mm;line-height:1}
+.A .badge i{font-style:normal;font-size:1.7mm;font-weight:800;letter-spacing:.2mm}
+
+/* ===== B. Минимализм (PROSTO) ===== */
+.B{background:#fff;color:#1d1c22}
+.B .logo{position:absolute;top:9mm;left:0;right:0;text-align:center;font-size:4.2mm;font-weight:800;letter-spacing:2.4mm}
+.B .logo small{display:block;font-size:2.2mm;font-weight:500;letter-spacing:.8mm;color:#8a8694;margin-top:1mm}
+.B .ring{position:absolute;left:50%;top:22mm;transform:translateX(-50%);width:50mm;height:50mm;border-radius:50%;border:.3mm solid #1d1c22}
+.B .pk{height:52mm;top:21mm}
+.B .off{position:absolute;top:77mm;left:0;right:0;text-align:center;color:#e63a2e}
+.B .off b{display:block;font-size:13mm;font-weight:900;line-height:1;letter-spacing:-.4mm}
+.B .off span{display:block;font-size:3.2mm;font-weight:800;letter-spacing:1mm;margin-top:1mm}
+.B ul{position:absolute;top:99mm;left:16mm;right:16mm;list-style:none}
+.B li{font-size:2.9mm;font-weight:700;letter-spacing:.8mm;text-align:center;padding:1.3mm 0;border-bottom:.25mm solid #e3e1e6}
+.B li:first-child{border-top:.25mm solid #e3e1e6}
+.B .foot{position:absolute;left:9mm;right:9mm;bottom:8mm;display:flex;align-items:center;justify-content:space-between}
+.B .foot p{font-size:2.3mm;line-height:1.45;color:#4a4752}
+.B .foot b{color:#1d1c22}
+.B .foot img{width:14mm;height:14mm}
+
+/* ===== C. Ретро-вывеска (bakery) ===== */
+.C{background:#f3ead3}
+.C .in{position:absolute;inset:4mm;background:#9fd6cf;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 .4mm,transparent .4mm 2.2mm)}
+.C .line{position:absolute;inset:6.5mm;border:.4mm solid #fff;border-radius:1mm}
+.C .top{position:absolute;top:11mm;left:0;right:0;text-align:center;font-family:'Playfair Display';font-weight:700;font-size:3.2mm;letter-spacing:1.4mm;color:#2b2320}
+.C .stars{position:absolute;top:16mm;left:0;right:0;text-align:center;font-size:3mm;letter-spacing:1.4mm;color:#2b2320}
+.C .word{position:absolute;top:21mm;left:0;right:0;text-align:center;font-family:'Rubik Mono One';font-size:11.5mm;line-height:1;color:#ff8a2a;
+  -webkit-text-stroke:.6mm #2b2320;paint-order:stroke fill;text-shadow:.9mm .9mm 0 #2b2320}
+.C .burst{position:absolute;left:50%;top:76mm;width:120mm;height:120mm;transform:translate(-50%,-50%);border-radius:50%;
+  background:repeating-conic-gradient(#f3ead3 0 7.5deg,transparent 7.5deg 15deg);opacity:.55;
+  -webkit-mask:radial-gradient(circle,#000 0 35%,transparent 62%);mask:radial-gradient(circle,#000 0 35%,transparent 62%)}
+.C .pk{height:52mm;top:42mm}
+.C .ribbon{position:absolute;left:12mm;right:12mm;top:100mm;height:10mm;background:#2b2320;color:#f3ead3;
+  clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%);display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display';font-weight:700;font-size:3.6mm;letter-spacing:.9mm}
+.C .sub{position:absolute;top:113mm;left:0;right:0;text-align:center;font-family:'Playfair Display';font-style:italic;font-weight:700;font-size:4mm;color:#2b2320}
+.C .promo{position:absolute;left:50%;top:121mm;transform:translateX(-50%);background:#f3ead3;border:.4mm dashed #2b2320;border-radius:1.5mm;padding:1.4mm 3.4mm;
+  font-size:2.7mm;font-weight:700;color:#2b2320;white-space:nowrap}
+.C .promo b{color:#e2561a;font-weight:900}
+.C .fine{position:absolute;bottom:9mm;left:0;right:0;text-align:center;font-size:2mm;color:#2b2320;letter-spacing:.3mm}
+
+/* ===== D. Журнал (Black Friday editorial) ===== */
+.D{background:#ebe7e1;color:#111}
+.D .h{position:absolute;top:9mm;left:6.5mm;font-size:21mm;font-weight:900;letter-spacing:-1.6mm;line-height:.9}
+.D .mini{position:absolute;font-size:2.1mm;font-weight:700;letter-spacing:.5mm;line-height:1.35;text-transform:uppercase}
+.D .no{position:absolute;top:9mm;right:7mm;font-size:3mm;font-weight:800}
+.D .bar{position:absolute;left:0;right:0;top:37mm;height:.5mm;background:#111}
+.D .pk{height:96mm;right:-8mm;top:44mm}
+.D .pk2{height:62mm;left:8mm;top:66mm;filter:drop-shadow(0 2mm 2.5mm rgba(0,0,0,.3))}
+.D .big{position:absolute;left:6mm;bottom:17mm;font-size:12mm;font-weight:900;letter-spacing:-.8mm;line-height:.9;color:#111;z-index:2}
+.D .tag{position:absolute;right:7mm;bottom:8mm;background:#e63a2e;color:#fff;padding:1.4mm 2.6mm;z-index:2;text-align:right}
+.D .tag b{display:block;font-size:6.5mm;font-weight:900;line-height:1}
+.D .tag i{font-style:normal;font-size:1.9mm;font-weight:800;letter-spacing:.4mm}
+
+/* ===== E. Галерея / зерно (ceramics) ===== */
+.E{background:#f1efe9;color:#141414}
+.E .grid{position:absolute;inset:0;background-image:linear-gradient(#c9c6bf .2mm,transparent .2mm),linear-gradient(90deg,#c9c6bf .2mm,transparent .2mm);background-size:7mm 7mm;opacity:.6}
+.E .t{position:absolute;top:8mm;left:7mm;font-family:'Playfair Display';font-weight:900;font-size:8mm;line-height:1.02}
+.E .t em{font-style:italic;font-weight:700}
+.E .vert{position:absolute;right:6mm;top:8mm;writing-mode:vertical-rl;font-size:2.6mm;font-weight:700;letter-spacing:1mm}
+.E .stage{position:absolute;left:7mm;right:14mm;top:40mm;height:72mm}
+.E .stage img{position:absolute;bottom:0;filter:grayscale(1) contrast(1.35) brightness(1.05)}
+.E .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;
+  background-image:radial-gradient(#141414 .28mm,transparent .32mm);background-size:.9mm .9mm;
+  -webkit-mask:linear-gradient(transparent 20%,#000 75%);mask:linear-gradient(transparent 20%,#000 75%)}
+.E .dot{position:absolute;left:70mm;top:26mm;width:22mm;height:22mm;border-radius:50%;background:#ff6a00;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3}
+.E .dot b{font-size:6.6mm;font-weight:900;line-height:1}
+.E .dot i{font-style:normal;font-size:1.8mm;font-weight:700}
+.E .info{position:absolute;left:7mm;right:7mm;bottom:8mm;display:grid;grid-template-columns:1fr 1fr 14mm;gap:3mm;align-items:end;border-top:.35mm solid #141414;padding-top:2.5mm}
+.E .info p{font-size:2.3mm;line-height:1.4}
+.E .info b{display:block;font-size:2.6mm}
+.E .info img{width:14mm;height:14mm;filter:grayscale(1)}
+
+/* ===== F. Игривый стикер (Y2K / Jelly Welly) ===== */
+.F{background:#ff6a00;color:#fff7e6}
+.F .ic{position:absolute;color:#fff7e6;font-family:'Onest';font-weight:900}
+.F .word{position:absolute;top:10mm;left:0;right:0;text-align:center;font-family:'Unbounded';font-weight:900;font-size:11.4mm;line-height:1;letter-spacing:-.3mm;
+  color:#fff7e6;-webkit-text-stroke:.5mm #2e1a0f;paint-order:stroke fill;text-shadow:0 1.2mm 0 #2e1a0f}
+.F .sub{position:absolute;top:25mm;left:0;right:0;text-align:center;font-family:'Unbounded';font-weight:600;font-size:3.1mm}
+.F .cards{position:absolute;left:8mm;right:8mm;top:34mm;height:72mm;display:flex;gap:4mm}
+.F .card{flex:1;background:#fff7e6;border-radius:5mm;border:.5mm solid #2e1a0f;box-shadow:0 1.2mm 0 #2e1a0f;position:relative;color:#2e1a0f;text-align:center}
+.F .card img{position:absolute;left:50%;transform:translateX(-50%);top:4mm;height:46mm;filter:drop-shadow(0 1.5mm 1.5mm rgba(0,0,0,.25))}
+.F .card b{position:absolute;left:0;right:0;top:53mm;font-family:'Unbounded';font-weight:800;font-size:3.4mm}
+.F .card span{position:absolute;left:0;right:0;top:59mm;font-size:3mm;font-weight:700}
+.F .sticker{position:absolute;left:50%;transform:translateX(-50%) rotate(-6deg);top:108mm;background:#fff7e6;color:#2e1a0f;border:.5mm solid #2e1a0f;border-radius:20mm;
+  padding:2mm 6mm;font-family:'Unbounded';font-weight:900;font-size:5mm;white-space:nowrap;box-shadow:0 1.2mm 0 #2e1a0f}
+.F .sticker small{font-family:'Onest';font-weight:800;font-size:2.6mm;margin-left:1.6mm}
+.F .fine{position:absolute;bottom:8mm;left:0;right:0;text-align:center;font-size:2.4mm;font-weight:700}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- A -->
+  <div class="cell"><div class="f A">
+    <div class="stripes2"></div><div class="stripes"></div>
+    <div class="kick">СУХОЙ КОРМ · СПб</div>
+    <div class="word">ХВОСТИК</div>
+    <img class="pk" style="left:23mm" src="../public/img/p/myau-assorti.png">
+    <img class="pk" style="left:52mm" src="../public/img/p/gav-assorti.png">
+    <div class="t1">ВКУС, КОТОРЫЙ ЖДУТ</div>
+    <div class="t2">ДЛЯ КОШЕК И СОБАК · ОТ 960 ₽</div>
+    <div class="badge"><b>−10%</b><i>ХВОСТИК10</i></div>
+  </div><div class="cap">A · Бренд-постер <span>— Ferrari: огромное слово, пачки поверх, полосы</span></div></div>
+
+  <!-- B -->
+  <div class="cell"><div class="f B">
+    <div class="logo">ХВОСТИК<small>корм для кошек и собак</small></div>
+    <div class="ring"></div>
+    <img class="pk" style="left:41mm" src="../public/img/p/myau-kitten.png">
+    <div class="off"><b>−10%</b><span>НА ПЕРВЫЙ ЗАКАЗ</span></div>
+    <ul><li>ДЛЯ КОШЕК</li><li>ДЛЯ КОТЯТ</li><li>ДЛЯ СОБАК</li><li>ДЛЯ ЩЕНКОВ</li></ul>
+    <div class="foot"><p>промокод <b>ХВОСТИК10</b><br>доставка 0 ₽ до 5Post в СПб<br>от 960 ₽ за пакет</p><img src="qr.png"></div>
+  </div><div class="cap">B · Минимализм <span>— PROSTO: белый, одна красная цифра, список</span></div></div>
+
+  <!-- C -->
+  <div class="cell"><div class="f C">
+    <div class="in"></div><div class="line"></div>
+    <div class="top">КОРМА ДЛЯ ПИТОМЦЕВ</div>
+    <div class="stars">★ ★ ★ ★ ★</div>
+    <div class="word">ХВОСТИК</div>
+    <div class="burst"></div>
+    <img class="pk" style="left:28mm" src="../public/img/p/myau-turkey.png">
+    <img class="pk" style="left:52mm" src="../public/img/p/gav-chicken.png">
+    <div class="ribbon">8 РЕЦЕПТОВ · ОТ 960 ₽</div>
+    <div class="sub">для кошек и собак</div>
+    <div class="promo">промокод <b>ХВОСТИК10</b> — −10% на первый заказ</div>
+    <div class="fine">доставка бесплатно · пункты 5Post · Санкт-Петербург</div>
+  </div><div class="cap">C · Ретро-вывеска <span>— пекарня: рамка, лучи, лента, обводка</span></div></div>
+
+  <!-- D -->
+  <div class="cell"><div class="f D">
+    <div class="h">хвостик</div>
+    <div class="no">№ 01</div>
+    <div class="bar"></div>
+    <div class="mini" style="top:40mm;left:7mm">сухой корм<br>для кошек и собак</div>
+    <div class="mini" style="top:40mm;right:7mm;text-align:right">8 рецептов<br>от 960 ₽</div>
+    <img class="pk" src="../public/img/p/gav-assorti.png">
+    <img class="pk pk2" src="../public/img/p/myau-assorti.png">
+    <div class="big">закажи<br>сейчас</div>
+    <div class="mini" style="left:7mm;bottom:9mm">доставка 0 ₽ · 5Post · СПб</div>
+    <div class="tag"><b>−10%</b><i>ХВОСТИК10 · ОНЛАЙН</i></div>
+  </div><div class="cap">D · Журнал <span>— Black Friday: строчный заголовок, микротекст по углам</span></div></div>
+
+  <!-- E -->
+  <div class="cell"><div class="f E">
+    <div class="grid"></div>
+    <div class="t">Хвостик<em>.МЯУ</em><br>Хвостик<em>.ГАВ</em></div>
+    <div class="vert">СУХОЙ КОРМ · САНКТ-ПЕТЕРБУРГ</div>
+    <div class="stage">
+      <img style="left:0;height:58mm" src="../public/img/p/myau-steril.png">
+      <img style="left:22mm;height:70mm" src="../public/img/p/myau-assorti.png">
+      <img style="left:46mm;height:62mm" src="../public/img/p/gav-small.png">
+      <div class="grain"></div>
+    </div>
+    <div class="dot"><b>−10%</b><i>первый заказ</i></div>
+    <div class="info"><p><b>8 рецептов</b>для кошек, котят, собак и щенков</p><p><b>от 960 ₽</b>промокод ХВОСТИК10, доставка 0 ₽</p><img src="qr.png"></div>
+  </div><div class="cap">E · Галерея <span>— керамика: сетка, ч/б зерно, один цветной акцент</span></div></div>
+
+  <!-- F -->
+  <div class="cell"><div class="f F">
+    <div class="ic" style="top:6mm;left:7mm;font-size:6mm">✦</div>
+    <div class="ic" style="top:28mm;right:7mm;font-size:4mm">✦</div>
+    <div class="ic" style="top:104mm;left:8mm;font-size:5mm">☺</div>
+    <div class="ic" style="top:120mm;right:9mm;font-size:6mm">✦</div>
+    <div class="word">ХВОСТИК</div>
+    <div class="sub">порадуй хвостатого</div>
+    <div class="cards">
+      <div class="card"><img src="../public/img/p/myau-assorti.png"><b>для кошек</b><span>от 960 ₽</span></div>
+      <div class="card"><img src="../public/img/p/gav-assorti.png"><b>для собак</b><span>от 1055 ₽</span></div>
+    </div>
+    <div class="sticker">−10%<small>ХВОСТИК10</small></div>
+    <div class="fine">доставка бесплатно · 5Post · СПб</div>
+  </div><div class="cap">F · Игривый стикер <span>— Jelly Welly: 2 цвета, толстая обводка, карточки</span></div></div>
+
+</div>
+</body>
+</html>

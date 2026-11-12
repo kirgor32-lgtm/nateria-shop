@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка А6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap');
+
+  /* Трим А6 = 105×148мм. Вылеты 2мм на сторону + отступ от линии реза 3мм = 5мм совокупно. */
+  @page { size: 109mm 152mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 109mm; height: 152mm;
+    font-family: 'Onest', system-ui, sans-serif;
+    color: #2e2c38;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    position: relative;
+    width: 109mm; height: 152mm;
+    overflow: hidden;
+    background: #f4f4f4;
+  }
+  /* -------- декоративный верхний блок может уходить в вылет -------- */
+  .band-top {
+    position: absolute; top: 0; left: 0; width: 109mm; height: 45mm;
+    background: linear-gradient(150deg, #5242d6 0%, #6a5aff 100%);
+  }
+  .paw { position: absolute; top: 5mm; left: 7mm; width: 8mm; height: 8mm; }
+  .brand { position: absolute; top: 6.1mm; left: 17mm; font-weight: 800; font-size: 5.6mm; color: #fff; letter-spacing: -0.2px; }
+
+  .headline {
+    position: absolute; top: 15mm; left: 7mm; right: 7mm;
+    font-weight: 800; font-size: 7.1mm; line-height: 1.15; color: #fff; letter-spacing: -0.2px;
+  }
+  .subline {
+    position: absolute; top: 34mm; left: 7mm; right: 7mm;
+    font-weight: 500; font-size: 3.6mm; line-height: 1.32; color: #e7e3ff;
+  }
+
+  .packshots { position: absolute; top: 47mm; left: 0; width: 109mm; height: 41mm; }
+  .pack { position: absolute; width: 19mm; filter: drop-shadow(0 2.5mm 3mm rgba(46,44,56,.22)); }
+  .pack.cat { left: 18mm; top: 1mm; transform: rotate(-7deg); }
+  .pack.dog { left: 62mm; top: -1mm; transform: rotate(7deg); }
+
+  .caption { position: absolute; top: 89mm; left: 7mm; right: 7mm; text-align: center; font-size: 3.1mm; font-weight: 600; color: #6b6775; }
+  .caption b.c1 { color: #ff6a00; }
+  .caption b.c2 { color: #5242d6; }
+
+  .benefits { position: absolute; top: 96mm; left: 7mm; right: 7mm; }
+  .benefit { display: flex; align-items: center; gap: 3mm; margin-bottom: 2.6mm; }
+  .dot { flex: none; width: 5.6mm; height: 5.6mm; border-radius: 50%; background: #eeebff; display: flex; align-items: center; justify-content: center; font-size: 3.3mm; }
+  .benefit b { font-size: 3.9mm; font-weight: 700; line-height: 1.2; }
+
+  .cta {
+    position: absolute; left: 5mm; right: 5mm; bottom: 5mm; top: 118mm;
+    background: #2e2c38; border-radius: 4mm; padding: 4mm;
+    display: flex; align-items: center; gap: 4mm;
+  }
+  .cta img { width: 21mm; height: 21mm; border-radius: 2mm; background: #fff; padding: 1.6mm; flex: none; }
+  .cta-text b { color: #fff; font-size: 4mm; font-weight: 700; line-height: 1.22; display: block; margin-bottom: 1.6mm; }
+  .cta-text span { color: #c9c2ff; font-size: 3.2mm; font-weight: 600; word-break: break-all; }
+
+  .benefit .dot { display: flex; }
+
+  /* -------- служебные направляющие только для проверки на экране -------- */
+  .guides .trim { position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; outline: 0.35mm dashed rgba(255,0,0,.75); }
+  .guides .safe { position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; outline: 0.35mm dashed rgba(0,140,255,.8); }
+  .guides .label { position: absolute; font-family: monospace; font-size: 2.6mm; color: rgba(0,0,0,.6); background: #fff; padding: 0.3mm 1mm; z-index: 5; }
+</style>
+</head>
+<body>
+  <div class="page" id="page">
+    <div class="band-top"></div>
+    <img class="paw" src="paw.svg" alt="">
+    <div class="brand">Хвостик</div>
+    <div class="headline">Порадуем питомца вместе?</div>
+    <div class="subline">Сухой корм с мясом на первом месте — для кошек и собак</div>
+
+    <div class="packshots">
+      <img class="pack cat" src="myau-assorti.png" alt="">
+      <img class="pack dog" src="gav-assorti.png" alt="">
+    </div>
+    <div class="caption"><b class="c1">Хвостик.МЯУ</b> — кошкам&nbsp;&nbsp;·&nbsp;&nbsp;<b class="c2">Хвостик.ГАВ</b> — собакам</div>
+
+    <div class="benefits">
+      <div class="benefit"><div class="dot">🥩</div><b>Говядина, курица или индейка — мясо на первом месте</b></div>
+      <div class="benefit"><div class="dot">🚚</div><b>Бесплатная доставка в постаматы 5Post по Санкт-Петербургу</b></div>
+    </div>
+
+    <div class="cta">
+      <img src="qr.png" alt="QR-код">
+      <div class="cta-text">
+        <b>Сканируйте — и подберите корм за пару минут</b>
+        <span>kirgor32-lgtm.github.io/hvostik-shop</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    if (location.search.includes('guides')) {
+      const p = document.getElementById('page')
+      p.classList.add('guides')
+      const trim = document.createElement('div'); trim.className = 'trim'; p.appendChild(trim)
+      const safe = document.createElement('div'); safe.className = 'safe'; p.appendChild(safe)
+      const l1 = document.createElement('div'); l1.className = 'label'; l1.style.top = '0'; l1.style.left = '2mm'; l1.textContent = 'линия реза'; p.appendChild(l1)
+      const l2 = document.createElement('div'); l2.className = 'label'; l2.style.top = '5mm'; l2.style.left = '5mm'; l2.textContent = 'зона безопасности'; p.appendChild(l2)
+    }
+  </script>
+</body>
+</html>

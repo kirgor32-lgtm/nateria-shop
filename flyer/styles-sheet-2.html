@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — развитие стилей B и C</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Rubik+Mono+One&family=Lobster&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Onest',sans-serif;background:#d9d6d0;-webkit-font-smoothing:antialiased}
+.sheet{display:grid;grid-template-columns:repeat(3,105mm);gap:12mm 10mm;padding:10mm;width:max-content}
+.row-t{grid-column:1/-1;font-size:5mm;font-weight:800;color:#2e2c38;margin-bottom:-6mm}
+.cell .cap{margin-top:3mm;font-size:3.6mm;font-weight:700;color:#2e2c38}
+.cell .cap span{font-weight:500;color:#6a6577}
+.f{position:relative;width:105mm;height:148mm;overflow:hidden;box-shadow:0 2mm 6mm rgba(0,0,0,.18)}
+.f img.pk{position:absolute;filter:drop-shadow(0 2mm 2.2mm rgba(0,0,0,.28))}
+.c{position:absolute;left:0;right:0;text-align:center}
+
+/* ================= B — минимализм ================= */
+.B{background:#fff;color:#1d1c22;--red:#e63a2e}
+.B .frame{position:absolute;inset:5mm;border:.25mm solid #1d1c22}
+.B .logo{top:10mm;display:flex;align-items:center;justify-content:center;gap:2mm;font-size:4.2mm;font-weight:800;letter-spacing:2.2mm}
+.B .logo svg{width:4.6mm;height:4.6mm}
+.B .logo-sub{top:16.5mm;font-size:2.2mm;font-weight:500;letter-spacing:.8mm;color:#8a8694}
+.B ul{position:absolute;list-style:none}
+.B li{font-size:2.8mm;font-weight:700;letter-spacing:.8mm;text-align:center;padding:1.1mm 0;border-bottom:.25mm solid #e3e1e6;display:flex;align-items:center;justify-content:center;gap:1.6mm}
+.B li:first-child{border-top:.25mm solid #e3e1e6}
+.B li svg{width:2.4mm;height:2.4mm;color:var(--red)}
+.B .foot{position:absolute;left:10mm;right:10mm;bottom:10mm;display:flex;align-items:center;justify-content:space-between;gap:3mm}
+.B .foot p{font-size:2.3mm;line-height:1.45;color:#4a4752}
+.B .foot b{color:#1d1c22}
+.B .foot img{width:13mm;height:13mm}
+
+/* B1 */
+.B1 .ring{position:absolute;left:50%;top:22mm;transform:translateX(-50%);width:48mm;height:48mm;border-radius:50%;border:.3mm solid #1d1c22}
+.B1 .pk{height:50mm;top:21mm;left:41mm}
+.B1 .off{top:75mm;color:var(--red)}
+.B1 .off b{display:block;font-size:13mm;font-weight:900;line-height:1;letter-spacing:-.4mm}
+.B1 .off span{display:block;font-size:3mm;font-weight:800;letter-spacing:1mm;margin-top:1mm}
+.B1 ul{top:97mm;left:20mm;right:20mm}
+.B1 .heart{position:absolute;top:21mm;right:13mm;width:9mm;color:var(--red)}
+
+/* B2 */
+.B2 .arc{position:absolute;top:23mm;width:36mm;height:44mm;border:.3mm solid #1d1c22;border-radius:18mm 18mm 0 0;border-bottom:none}
+.B2 .pk{height:42mm;top:25mm}
+.B2 .lbl{position:absolute;top:69mm;width:36mm;text-align:center}
+.B2 .lbl b{display:block;font-size:2.8mm;font-weight:800;letter-spacing:.8mm}
+.B2 .lbl span{display:block;font-size:2.6mm;color:#6a6577;margin-top:.6mm}
+.B2 .off{top:82mm;color:var(--red)}
+.B2 .off b{display:block;font-size:14mm;font-weight:900;line-height:1;letter-spacing:-.4mm}
+.B2 .off span{display:block;font-size:3mm;font-weight:800;letter-spacing:1mm;margin-top:1mm}
+.B2 .code{position:absolute;left:50%;top:107mm;transform:translateX(-50%);border:.3mm dashed #1d1c22;padding:1.4mm 4mm;font-size:2.7mm;font-weight:600;white-space:nowrap}
+.B2 .code b{font-weight:900;letter-spacing:.5mm}
+
+/* B3 */
+.B3 .num{top:22mm;font-size:31mm;font-weight:900;line-height:1;letter-spacing:-1mm;color:transparent;-webkit-text-stroke:.45mm var(--red)}
+.B3 .pk{height:56mm;top:49mm}
+.B3 .off{top:108.5mm;font-size:3.4mm;font-weight:900;letter-spacing:1.2mm;color:var(--red)}
+.B3 .cats{top:115mm;font-size:2.5mm;font-weight:600;letter-spacing:.6mm;color:#4a4752}
+
+/* ================= C — ретро-вывеска ================= */
+.C{--bg:#9fd6cf;--paper:#f3ead3;--ink:#2b2320;--fill:#ff8a2a;--shadow:#2b2320;--burst:#f3ead3;--rib:#2b2320;--ribtx:#f3ead3;--accent:#e2561a;--line:#fff;background:var(--paper)}
+.C .in{position:absolute;inset:4mm;background:var(--bg);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.16) 0 .4mm,transparent .4mm 2.2mm)}
+.C .line{position:absolute;inset:6.5mm;border:.4mm solid var(--line);border-radius:1mm}
+.C .line2{position:absolute;inset:7.6mm;border:.2mm solid var(--line);border-radius:.6mm;opacity:.7}
+.C .top{top:12mm;font-family:'Playfair Display';font-weight:700;font-size:3mm;letter-spacing:1.3mm;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:2.2mm}
+.C .top i{display:block;width:9mm;height:.3mm;background:var(--ink)}
+.C .stars{top:17mm;font-size:2.8mm;letter-spacing:1.4mm;color:var(--ink)}
+.C .word{top:22mm;font-family:'Rubik Mono One';font-size:11.4mm;line-height:1;color:var(--fill);-webkit-text-stroke:.6mm var(--ink);paint-order:stroke fill;text-shadow:.9mm .9mm 0 var(--shadow)}
+.C .burst{position:absolute;left:50%;top:72mm;width:120mm;height:120mm;transform:translate(-50%,-50%);border-radius:50%;
+  background:repeating-conic-gradient(var(--burst) 0 7.5deg,transparent 7.5deg 15deg);opacity:.55;
+  -webkit-mask:radial-gradient(circle,#000 0 33%,transparent 60%);mask:radial-gradient(circle,#000 0 33%,transparent 60%)}
+.C .pk{height:50mm;top:41mm}
+.C .seal{position:absolute;right:9mm;top:38mm;width:19mm;height:19mm;border-radius:50%;background:var(--accent);color:var(--paper);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 0 .5mm var(--ink);z-index:2}
+.C .seal::before{content:'';position:absolute;inset:1.2mm;border-radius:50%;border:.25mm dashed var(--paper)}
+.C .seal b{font-family:'Rubik Mono One';font-size:4.4mm;line-height:1}
+.C .seal i{font-style:normal;font-size:1.6mm;font-weight:800;letter-spacing:.2mm;margin-top:.6mm}
+.C .ribbon{position:absolute;left:11mm;right:11mm;top:96mm;height:10mm;background:var(--rib);color:var(--ribtx);
+  clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%);display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display';font-weight:700;font-size:3.5mm;letter-spacing:.9mm}
+.C .sub{top:109mm;font-family:'Lobster';font-size:5mm;color:var(--ink)}
+.C .promo{position:absolute;left:50%;top:118mm;transform:translateX(-50%);background:var(--paper);border:.4mm dashed var(--ink);border-radius:1.5mm;padding:1.4mm 3.4mm;
+  font-size:2.7mm;font-weight:700;color:var(--ink);white-space:nowrap}
+.C .promo b{color:var(--accent);font-weight:900}
+.C .fine{bottom:11mm;font-size:2mm;color:var(--ink);letter-spacing:.3mm}
+.C .corner{position:absolute;font-size:3mm;color:var(--line)}
+
+.C2{--bg:#fbefd9;--paper:#6b3b1f;--ink:#6b3b1f;--fill:#ff8a2a;--shadow:#6b3b1f;--burst:#ffcf9a;--rib:#e2561a;--ribtx:#fff3e0;--accent:#e2561a;--line:#6b3b1f}
+.C2 .in{background-image:repeating-linear-gradient(45deg,rgba(107,59,31,.07) 0 .4mm,transparent .4mm 2.2mm)}
+.C2 .burst{opacity:.75}
+.C2 .promo{background:#fff8ec}
+.C2 .seal{color:#fff3e0}.C2 .seal::before{border-color:#fff3e0}
+
+.C3{--bg:#22304f;--paper:#f3ead3;--ink:#f3ead3;--fill:#ff8a2a;--shadow:#f3ead3;--burst:#f3ead3;--rib:#f3ead3;--ribtx:#22304f;--accent:#ff6a00;--line:#f3ead3}
+.C3 .in{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 .4mm,transparent .4mm 2.2mm)}
+.C3 .word{-webkit-text-stroke:.6mm #141c30;text-shadow:.9mm .9mm 0 #f3ead3}
+.C3 .burst{opacity:.14}
+.C3 .promo{background:#22304f}
+.C3 .seal{box-shadow:0 0 0 .5mm #f3ead3}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="12" cy="16" rx="5.2" ry="4.4"/><ellipse cx="5" cy="10" rx="2.1" ry="2.7"/><ellipse cx="9.3" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="14.7" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="19" cy="10" rx="2.1" ry="2.7"/></g></symbol>
+  <symbol id="heart" viewBox="0 0 40 36"><path d="M20 33 C8 24 2 17 2 10.5 C2 5.5 6 2 10.5 2 C14.5 2 17.6 4.4 20 8 C22.4 4.4 25.5 2 29.5 2 C34 2 38 5.5 38 10.5 C38 17 32 24 20 33Z" fill="none" stroke="currentColor" stroke-width="1.6"/><g transform="translate(13 10) scale(.58)"><use href="#paw"/></g></symbol>
+</svg>
+<div class="sheet">
+  <div class="row-t">Стиль B — минимализм</div>
+
+  <!-- B1 -->
+  <div class="cell"><div class="f B B1">
+    <div class="frame"></div>
+    <div class="c logo"><svg style="color:#e63a2e"><use href="#paw"/></svg>ХВОСТИК</div>
+    <div class="c logo-sub">корм для кошек и собак</div>
+    <div class="ring"></div>
+    <svg class="heart" viewBox="0 0 40 36"><use href="#heart"/></svg>
+    <img class="pk" src="../public/img/p/myau-kitten.png">
+    <div class="c off"><b>−10%</b><span>НА ПЕРВЫЙ ЗАКАЗ</span></div>
+    <ul>
+      <li><svg><use href="#paw"/></svg>ДЛЯ КОШЕК</li><li><svg><use href="#paw"/></svg>ДЛЯ КОТЯТ</li>
+      <li><svg><use href="#paw"/></svg>ДЛЯ СОБАК</li><li><svg><use href="#paw"/></svg>ДЛЯ ЩЕНКОВ</li>
+    </ul>
+    <div class="foot"><p>промокод <b>ХВОСТИК10</b><br>доставка 0 ₽ до 5Post в СПб<br>от 960 ₽ за пакет</p><img src="qr.png"></div>
+  </div><div class="cap">B1 · Чистый <span>— рамка, лапки-маркеры, сердце-лапка</span></div></div>
+
+  <!-- B2 -->
+  <div class="cell"><div class="f B B2">
+    <div class="frame"></div>
+    <div class="c logo"><svg style="color:#e63a2e"><use href="#paw"/></svg>ХВОСТИК</div>
+    <div class="c logo-sub">сухой корм · Санкт-Петербург</div>
+    <div class="arc" style="left:13mm"></div><div class="arc" style="left:56mm"></div>
+    <img class="pk" style="left:21.4mm" src="../public/img/p/myau-assorti.png">
+    <img class="pk" style="left:64.4mm" src="../public/img/p/gav-assorti.png">
+    <div class="lbl" style="left:13mm"><b>ДЛЯ КОШЕК</b><span>от 960 ₽</span></div>
+    <div class="lbl" style="left:56mm"><b>ДЛЯ СОБАК</b><span>от 1055 ₽</span></div>
+    <div class="c off"><b>−10%</b><span>НА ПЕРВЫЙ ЗАКАЗ</span></div>
+    <div class="code">промокод <b>ХВОСТИК10</b></div>
+    <div class="foot"><p><b>доставка 0 ₽</b><br>до пунктов 5Post в СПб<br>8 рецептов для всех возрастов</p><img src="qr.png"></div>
+  </div><div class="cap">B2 · Двое <span>— кошка и собака в арках, две цены</span></div></div>
+
+  <!-- B3 -->
+  <div class="cell"><div class="f B B3">
+    <div class="frame"></div>
+    <div class="c logo"><svg style="color:#e63a2e"><use href="#paw"/></svg>ХВОСТИК</div>
+    <div class="c logo-sub">корм для кошек и собак</div>
+    <div class="c num">−10%</div>
+    <img class="pk" style="left:26.6mm" src="../public/img/p/myau-steril.png">
+    <img class="pk" style="left:52.4mm" src="../public/img/p/gav-small.png">
+    <div class="c off">НА ПЕРВЫЙ ЗАКАЗ</div>
+    <div class="c cats">кошки · котята · собаки · щенки</div>
+    <div class="foot"><p>промокод <b>ХВОСТИК10</b><br>доставка 0 ₽ до 5Post в СПб<br>от 960 ₽ за пакет</p><img src="qr.png"></div>
+  </div><div class="cap">B3 · Контур <span>— огромная цифра линией, пачки поверх</span></div></div>
+
+  <div class="row-t">Стиль C — ретро-вывеска</div>
+
+  <!-- C1 / C2 / C3 share markup -->
+  <div class="cell"><div class="f C C1">
+    <div class="in"></div><div class="line"></div><div class="line2"></div>
+    <div class="c top"><i></i>КОРМА ДЛЯ ПИТОМЦЕВ<i></i></div>
+    <div class="c stars">★ ★ ★ ★ ★</div>
+    <div class="c word">ХВОСТИК</div>
+    <div class="burst"></div>
+    <img class="pk" style="left:28.6mm" src="../public/img/p/myau-turkey.png">
+    <img class="pk" style="left:52.6mm" src="../public/img/p/gav-chicken.png">
+    <div class="seal"><b>−10%</b><i>ПЕРВЫЙ ЗАКАЗ</i></div>
+    <div class="ribbon">8 РЕЦЕПТОВ · ОТ 960 ₽</div>
+    <div class="c sub">для кошек и собак</div>
+    <div class="promo">промокод <b>ХВОСТИК10</b> — −10% на первый заказ</div>
+    <div class="c fine">доставка бесплатно · пункты 5Post · Санкт-Петербург</div>
+  </div><div class="cap">C1 · Мятная классика <span>— двойная рамка, печать-скидка</span></div></div>
+
+  <div class="cell"><div class="f C C2">
+    <div class="in"></div><div class="line"></div><div class="line2"></div>
+    <div class="c top"><i></i>КОРМА ДЛЯ ПИТОМЦЕВ<i></i></div>
+    <div class="c stars">★ ★ ★ ★ ★</div>
+    <div class="c word">ХВОСТИК</div>
+    <div class="burst"></div>
+    <img class="pk" style="left:28.6mm" src="../public/img/p/myau-assorti.png">
+    <img class="pk" style="left:52.6mm" src="../public/img/p/gav-puppy.png">
+    <div class="seal"><b>−10%</b><i>ПЕРВЫЙ ЗАКАЗ</i></div>
+    <div class="ribbon">8 РЕЦЕПТОВ · ОТ 960 ₽</div>
+    <div class="c sub">для кошек и собак</div>
+    <div class="promo">промокод <b>ХВОСТИК10</b> — −10% на первый заказ</div>
+    <div class="c fine">доставка бесплатно · пункты 5Post · Санкт-Петербург</div>
+  </div><div class="cap">C2 · Сливочная <span>— кремовый фон, тёплый коричневый, оранжевые лучи</span></div></div>
+
+  <div class="cell"><div class="f C C3">
+    <div class="in"></div><div class="line"></div><div class="line2"></div>
+    <div class="c top"><i></i>КОРМА ДЛЯ ПИТОМЦЕВ<i></i></div>
+    <div class="c stars">★ ★ ★ ★ ★</div>
+    <div class="c word">ХВОСТИК</div>
+    <div class="burst"></div>
+    <img class="pk" style="left:28.6mm" src="../public/img/p/myau-kitten.png">
+    <img class="pk" style="left:52.6mm" src="../public/img/p/gav-assorti.png">
+    <div class="seal"><b>−10%</b><i>ПЕРВЫЙ ЗАКАЗ</i></div>
+    <div class="ribbon">8 РЕЦЕПТОВ · ОТ 960 ₽</div>
+    <div class="c sub">для кошек и собак</div>
+    <div class="promo">промокод <b>ХВОСТИК10</b> — −10% на первый заказ</div>
+    <div class="c fine">доставка бесплатно · пункты 5Post · Санкт-Петербург</div>
+  </div><div class="cap">C3 · Ночная вывеска <span>— тёмно-синий, кремовые линии</span></div></div>
+</div>
+</body>
+</html>

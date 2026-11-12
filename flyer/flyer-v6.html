@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка А6 v6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap');
+
+  /* Трим А6 = 105×148мм. Вылеты 2мм на сторону + отступ от линии реза 3мм = 5мм совокупно. */
+  @page { size: 109mm 152mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 109mm; height: 152mm; font-family: 'Onest', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .page { position: relative; width: 109mm; height: 152mm; overflow: hidden; background: #fff8f0; }
+
+  .blob1 { position: absolute; top: -20mm; left: -22mm; width: 70mm; height: 70mm; border-radius: 50%; background: #ffe8d6; }
+  .blob2 { position: absolute; bottom: 24mm; right: -22mm; width: 55mm; height: 55mm; border-radius: 50%; background: #eeebff; }
+
+  /* ===== Единая сетка: отступы 7мм слева/справа у ВСЕХ блоков, шаг 3мм между рядами =====
+     toprow  7–27   (20)
+     hero   30–72   (42)
+     tag    75–84    (9)
+     head   87–98   (11)
+     coupon 101–109  (8)
+     pills  112–121  (9)
+     cta    124–145 (21)  */
+
+  .row { position: absolute; left: 7mm; right: 7mm; z-index: 2; }
+
+  .toprow { top: 7mm; height: 20mm; }
+  .toprow .brand { position: absolute; top: 0; left: 0; bottom: 0; width: 68mm; display: flex; flex-direction: column; justify-content: center; gap: 1.8mm; }
+  .brand .line { display: flex; align-items: center; gap: 2.2mm; }
+  .brand svg { width: 6mm; height: 6mm; flex: none; }
+  .brand .name { font-weight: 800; font-size: 4.4mm; color: #2e2c38; letter-spacing: -.2px; }
+  .brand .kicker { font-size: 2.9mm; font-weight: 700; color: #5242d6; text-transform: uppercase; letter-spacing: .3px; line-height: 1.3; }
+  .toprow .sticker { position: absolute; top: 0; right: 0; width: 20mm; height: 20mm; border-radius: 50%; background: #ff6a00;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 2.4mm 4mm rgba(255,106,0,.35); }
+  .sticker b { color: #fff; font-size: 5.6mm; font-weight: 900; line-height: .85; }
+  .sticker span { color: #fff; font-size: 1.7mm; font-weight: 800; text-align: center; line-height: 1.1; margin-top: .4mm; }
+
+  .hero { top: 30mm; height: 42mm; display: flex; align-items: flex-end; justify-content: center; gap: 6mm; }
+  .hero img { height: 42mm; filter: drop-shadow(0 2.6mm 3.6mm rgba(46,44,56,.18)); }
+
+  .tag { top: 75mm; height: 9mm; display: flex; align-items: center; justify-content: center; }
+  .tag .box { height: 100%; background: #2e2c38; color: #fff; border-radius: 2.4mm; padding: 0 3.6mm; display: flex; align-items: center; gap: 2mm; white-space: nowrap; }
+  .tag .old { font-size: 2.9mm; color: #9a95ad; text-decoration: line-through; font-weight: 600; }
+  .tag .new { font-size: 4.2mm; font-weight: 800; color: #fff; }
+  .tag .new em { color: #ffb066; font-style: normal; }
+  .tag .per { font-size: 2.4mm; color: #c9c2ff; font-weight: 600; }
+
+  .headline { top: 87mm; height: 11mm; display: flex; align-items: center; justify-content: center; text-align: center;
+    font-weight: 800; font-size: 5mm; line-height: 1.15; color: #2e2c38; }
+  .headline em { color: #ff6a00; font-style: normal; }
+
+  .coupon { top: 101mm; height: 8mm; display: flex; align-items: center; justify-content: center; }
+  .coupon .box { height: 100%; display: flex; align-items: center; gap: 1.8mm; padding: 0 3.6mm;
+    border: .45mm dashed #c9c2ff; border-radius: 2.2mm; background: #fff; white-space: nowrap; }
+  .coupon .lbl { font-size: 2.6mm; font-weight: 600; color: #8a8694; }
+  .coupon b { font-size: 3.8mm; font-weight: 800; color: #5242d6; letter-spacing: .4px; }
+
+  .pills { top: 112mm; height: 9mm; display: flex; gap: 2.4mm; }
+  .pill { flex: 1; height: 100%; background: #fff; border: .3mm solid #ece6ff; border-radius: 2.4mm;
+    padding: 0 2.2mm; display: flex; align-items: center; gap: 1.6mm; }
+  .pill .ok { flex: none; width: 3.6mm; height: 3.6mm; border-radius: 50%; background: #5242d6; color: #fff; font-size: 2.2mm; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; }
+  .pill b { font-size: 2.7mm; font-weight: 700; color: #2e2c38; line-height: 1.1; }
+
+  .cta { top: 124mm; height: 21mm; background: #2e2c38; border-radius: 4.5mm; display: flex; align-items: center; gap: 3.4mm; padding: 0 3.4mm; }
+  .cta img { width: 16mm; height: 16mm; border-radius: 2mm; background: #fff; padding: 1.2mm; flex: none; }
+  .cta-text b { display: block; font-size: 3.2mm; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: .9mm; }
+  .cta-text .url { font-size: 2.6mm; font-weight: 700; color: #c9c2ff; word-break: break-all; display: block; }
+
+  .guides .trim { position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; outline: .35mm dashed rgba(255,0,0,.75); z-index: 9; }
+  .guides .safe { position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; outline: .35mm dashed rgba(0,120,220,.9); z-index: 9; }
+  .guides .grid { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 8; pointer-events: none; }
+  .guides .gl { position: absolute; left: 7mm; right: 7mm; border-top: .25mm solid rgba(0,160,80,.55); font-family: monospace; font-size: 2.2mm; color: #008850; }
+  .guides .label { position: absolute; font-family: monospace; font-size: 2.6mm; color: #000; background: #fff; padding: .3mm 1mm; z-index: 10; }
+</style>
+</head>
+<body>
+  <div class="page" id="page">
+    <div class="blob1"></div>
+    <div class="blob2"></div>
+
+    <div class="row toprow">
+      <div class="brand">
+        <div class="line">
+          <svg viewBox="0 0 64 64"><circle cx="32" cy="41" r="22.5" fill="#5242d6"/><g transform="translate(32 41) scale(.9)" fill="#fff">
+            <path d="M0 1.5 C7.5 1.5 12 8 12 12.6 C12 17 8.4 18.6 5.2 17.6 C3 16.9 1.6 16.4 0 16.4 C-1.6 16.4 -3 16.9 -5.2 17.6 C-8.4 18.6 -12 17 -12 12.6 C-12 8 -7.5 1.5 0 1.5 Z"/>
+            <ellipse cx="-13" cy="-3" rx="4.4" ry="5.6" transform="rotate(-24 -13 -3)"/>
+            <ellipse cx="-5" cy="-9.6" rx="4.7" ry="6" transform="rotate(-8 -5 -9.6)"/>
+            <ellipse cx="5" cy="-9.6" rx="4.7" ry="6" transform="rotate(8 5 -9.6)"/>
+            <ellipse cx="13" cy="-3" rx="4.4" ry="5.6" transform="rotate(24 13 -3)"/>
+          </g></svg>
+          <span class="name">Хвостик</span>
+        </div>
+        <div class="kicker">Сухой корм для кошек и собак</div>
+      </div>
+      <div class="sticker"><b>-10%</b><span>на первый<br>заказ</span></div>
+    </div>
+
+    <div class="row hero">
+      <img src="myau-assorti.png" alt="Хвостик.МЯУ — корм для кошек">
+      <img src="gav-assorti.png" alt="Хвостик.ГАВ — корм для собак">
+    </div>
+
+    <div class="row tag">
+      <div class="box"><span class="old">960 ₽</span><span class="new">от <em>864 ₽</em></span><span class="per">за пакет</span></div>
+    </div>
+
+    <div class="row headline">Порадуем <em>вашего</em> питомца вместе</div>
+
+    <div class="row coupon">
+      <div class="box"><span class="lbl">промокод</span><b>ХВОСТИК10</b></div>
+    </div>
+
+    <div class="row pills">
+      <div class="pill"><div class="ok">✓</div><b>Мясо на 1-м месте</b></div>
+      <div class="pill"><div class="ok">✓</div><b>Доставка бесплатно</b></div>
+    </div>
+
+    <div class="row cta">
+      <img src="qr.png" alt="QR-код">
+      <div class="cta-text">
+        <b>Сканируйте — оформите заказ со скидкой</b>
+        <span class="url">kirgor32-lgtm.github.io/hvostik-shop</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    if (location.search.includes('guides')) {
+      const p = document.getElementById('page'); p.classList.add('guides')
+      const trim = document.createElement('div'); trim.className = 'trim'; p.appendChild(trim)
+      const safe = document.createElement('div'); safe.className = 'safe'; p.appendChild(safe)
+      const l1 = document.createElement('div'); l1.className='label'; l1.style.top='0'; l1.style.left='2mm'; l1.textContent='линия реза'; p.appendChild(l1)
+      const l2 = document.createElement('div'); l2.className='label'; l2.style.top='5mm'; l2.style.left='5mm'; l2.textContent='зона безопасности'; p.appendChild(l2)
+      // линии сетки на границах рядов
+      const bounds = [7,27,30,72,75,84,87,98,101,109,112,121,124,145]
+      bounds.forEach(y => {
+        const g = document.createElement('div'); g.className='gl'; g.style.top = y+'mm'
+        g.textContent = y+'mm'
+        p.appendChild(g)
+      })
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка «как упаковка»</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Onest:wght@400;500;600;700;800;900&display=swap');
+@page { size: 109mm 152mm; margin: 0 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Onest',sans-serif;-webkit-font-smoothing:antialiased;background:#d9d6d0}
+body.print{background:none}
+.sheet{display:flex;gap:10mm;padding:10mm;width:max-content}
+body.print .sheet{display:block;padding:0}
+/* холст = обрез 105×148 + 2 мм вылеты */
+.f{position:relative;width:109mm;height:152mm;overflow:hidden;background:var(--body);color:#fff;
+   --body:#d4919a;--body-2:#c47a83;--ink:#6e2a35;--lime:#c2d153;--lime-ink:#3d4a12}
+body.print .f{page-break-after:always}
+.f.dog{--body:#b5767e;--body-2:#a3636c;--ink:#5e2230}
+/* лёгкий глянец пакета */
+.f::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:9;
+  background:linear-gradient(100deg,transparent 0 62%,rgba(255,255,255,.10) 70%,transparent 78%),
+             linear-gradient(180deg,rgba(0,0,0,.05),transparent 14%,transparent 86%,rgba(0,0,0,.07))}
+.abs{position:absolute}
+.c{position:absolute;left:0;right:0;text-align:center}
+
+/* ---- верх пакета: только зип-полоса на всю ширину (её можно резать) ---- */
+.zip{left:0;right:0;top:9mm;height:1.6mm;border-top:.35mm solid rgba(110,42,53,.45);border-bottom:.35mm solid rgba(110,42,53,.45);
+  background:repeating-linear-gradient(90deg,rgba(110,42,53,.16) 0 .6mm,transparent .6mm 1.2mm)}
+
+/* ---- логотип ---- */
+.logo{top:13mm;display:flex;align-items:center;justify-content:center;gap:.6mm;font-family:'Nunito';font-weight:900;font-size:9mm;line-height:1;letter-spacing:-.15mm}
+.logo svg{width:4.2mm;height:4.2mm;margin-top:3.2mm}
+.slogan{top:22.6mm;font-size:2.7mm;font-weight:500;font-style:italic;opacity:.95}
+
+/* ---- животное выглядывает из-за белой плашки ---- */
+.pet{z-index:3;display:block}
+.cat .pet{left:33.22mm;top:20.06mm;width:52.42mm}
+.dog .pet{left:27.24mm;top:13.69mm;width:65.14mm}
+.band{left:0;right:0;top:76mm;height:31mm;background:#f8f8f6;z-index:2;color:var(--ink)}
+.band .for{position:absolute;left:9mm;top:5mm;font-size:2.7mm;font-weight:800;letter-spacing:.35mm}
+.band .big{position:absolute;left:9mm;top:8.4mm;font-family:'Nunito';font-weight:900;font-size:15mm;line-height:1;letter-spacing:-.4mm;color:#1f1b1d}
+.band .big small{font-size:6mm;letter-spacing:0}
+.band .sub{position:absolute;left:9mm;top:23.6mm;font-size:2.9mm;font-weight:800;letter-spacing:.25mm;color:#1f1b1d}
+/* зелёный значок вместо «7 ступеней» */
+.badge{position:absolute;right:11mm;top:4.5mm;width:25mm;height:25mm;border-radius:50%;background:#fff;
+  box-shadow:0 0 0 .9mm var(--lime), 0 0 0 1.5mm #fff, 0 0 0 1.9mm var(--lime);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--lime-ink)}
+.badge i{font-style:normal;font-size:2.1mm;font-weight:700;letter-spacing:.2mm}
+.badge b{display:block;margin:.8mm 0;font-family:'Nunito';font-weight:900;font-size:3.75mm;letter-spacing:-.05mm;color:#1f1b1d}
+.badge span{font-size:2.05mm;font-weight:700;line-height:1.2}
+.dots{position:absolute;right:9.3mm;top:2.8mm;width:28.4mm;height:28.4mm;pointer-events:none}
+/* цена в стиле веса «1,5 кг» */
+.price{left:0;right:0;top:109.6mm;z-index:2;display:flex;align-items:flex-end;justify-content:flex-end;gap:1.4mm;padding-right:9mm;color:var(--lime)}
+.price .from{font-size:3.2mm;font-weight:800;margin-bottom:1.2mm;color:#fff}
+.price b{font-family:'Nunito';font-weight:900;font-size:8.4mm;line-height:1;color:#fff}
+.price svg{width:6mm;height:6mm;margin-bottom:.6mm}
+.packs{left:9mm;top:108.4mm;display:flex;gap:1mm;z-index:2}
+.packs img{height:12mm;filter:drop-shadow(0 .5mm .6mm rgba(0,0,0,.25))}
+
+/* ---- кружки-преимущества ---- */
+.icons{left:9mm;width:66mm;top:121.6mm;display:grid;grid-template-columns:repeat(4,1fr);gap:1.4mm;z-index:2}
+.icons div{text-align:center}
+.icons .o{width:9mm;height:9mm;margin:0 auto;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.icons .o svg{width:5.6mm;height:5.6mm}
+.icons .o b{font-family:'Nunito';font-weight:900;font-size:3.3mm;letter-spacing:-.1mm}
+.icons p{margin-top:.8mm;font-size:1.95mm;font-weight:600;line-height:1.15}
+
+/* ---- низ: «как заказать» вместо состава ---- */
+.howto{left:9mm;top:137.1mm;width:66mm;z-index:2;font-size:2.05mm;line-height:1.35}
+.howto h4{display:inline;font-size:2.15mm;font-weight:800;letter-spacing:.25mm;margin-right:.6mm}
+.howto b{font-weight:800}
+.qr{right:9mm;top:121.6mm;width:16.4mm;height:16.4mm;background:#fff;border-radius:1.4mm;padding:.9mm;z-index:2}
+.qr img{width:100%;height:100%;display:block}
+.qrcap{right:9mm;width:16.4mm;top:138.6mm;text-align:center;font-size:2mm;font-weight:700;z-index:2}
+
+/* направляющие */
+.guide{position:absolute;pointer-events:none;z-index:20;display:none}
+.g .guide{display:block}
+.trim{inset:2mm;border:.2mm dashed red}.safe{inset:9mm;border:.2mm dashed #06f}
+.cap{margin-top:3mm;font-size:3.4mm;font-weight:700;color:#2e2c38}
+body.print .cap{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="12" cy="16" rx="5.2" ry="4.4"/><ellipse cx="5" cy="10" rx="2.1" ry="2.7"/><ellipse cx="9.3" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="14.7" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="19" cy="10" rx="2.1" ry="2.7"/></g></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 3c0 9 5 14 13 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M13.5 13.5 18.5 18 13 21.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="truck" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M2 6h11v10H2zM13 9h4.5L21 12.5V16h-8z"/><circle cx="6" cy="17.5" r="2" fill="#fff"/><circle cx="17" cy="17.5" r="2" fill="#fff"/></g></symbol>
+    <symbol id="pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></g></symbol>
+    <symbol id="meat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5c3.5 0 6 2.6 6 6 0 4.5-4.5 8-9 8-1.2 0-2 .3-2.7 1L7 20.3a1.8 1.8 0 1 1-2.6-1.1 1.8 1.8 0 1 1-1.1-2.6l1.8-1.8c.7-.7 1-1.5 1-2.7 0-4.5 3.5-8.6 8.4-8.6z"/><path d="M12 8.5c1.6-.5 3.3.4 3.6 2"/></g></symbol>
+  </defs>
+</svg>
+
+<div class="sheet">
+<!-- ================= СТОРОНА 1 — КОШКИ ================= -->
+<div class="side"><div class="f cat">
+  <div class="abs zip"></div>
+
+  <div class="c logo">ХВОСТИК<svg style="color:#fff"><use href="#paw"/></svg>МЯУ</div>
+  <div class="c slogan">Забота о здоровье вашего Хвостика</div>
+
+  <!-- кот обведён с упаковки (вектор), лапами держится за край белой плашки -->
+  <img class="abs pet" src="trace/cat.svg" alt="">
+
+  <div class="abs band">
+    <div class="for">КОРМ ДЛЯ КОШЕК И КОТЯТ</div>
+    <div class="big">−10%</div>
+    <div class="sub">НА ПЕРВЫЙ ЗАКАЗ</div>
+    <svg class="dots" viewBox="0 0 100 100"><g fill="#c2d153"><circle cx="50" cy="3" r="3"/><circle cx="83" cy="17" r="3"/><circle cx="97" cy="50" r="3"/><circle cx="83" cy="83" r="3"/><circle cx="50" cy="97" r="3"/><circle cx="17" cy="83" r="3"/><circle cx="3" cy="50" r="3"/><circle cx="17" cy="17" r="3"/></g></svg>
+    <div class="badge"><i>промокод</i><b>ХВОСТИК10</b><span>на сайте<br>при оформлении</span></div>
+  </div>
+
+  <div class="abs packs">
+    <img src="../public/img/p/myau-assorti.png"><img src="../public/img/p/myau-steril.png"><img src="../public/img/p/myau-turkey.png"><img src="../public/img/p/myau-kitten.png">
+  </div>
+  <div class="abs price"><span class="from">от</span><b>960 ₽</b><svg style="color:#c2d153"><use href="#arrow"/></svg></div>
+
+  <div class="abs icons">
+    <div><div class="o"><svg><use href="#truck"/></svg></div><p>доставка<br>бесплатно</p></div>
+    <div><div class="o"><svg><use href="#pin"/></svg></div><p>пункты 5Post<br>в СПб</p></div>
+    <div><div class="o"><svg><use href="#meat"/></svg></div><p>больше 35%<br>мяса</p></div>
+    <div><div class="o"><b>8</b></div><p>рецептов<br>в линейке</p></div>
+  </div>
+
+  <div class="abs howto"><h4>КАК ЗАКАЗАТЬ:</h4>отсканируйте QR, выберите корм, введите <b>ХВОСТИК10</b> — скидка 10% на первый заказ. Пакеты 1,5 и 10 кг.</div>
+  <div class="abs qr"><img src="qr.png"></div><div class="abs qrcap">наш магазин</div>
+
+  <div class="guide trim"></div><div class="guide safe"></div>
+</div><div class="cap">Сторона 1 · Хвостик.МЯУ</div></div>
+
+<!-- ================= СТОРОНА 2 — СОБАКИ ================= -->
+<div class="side"><div class="f dog">
+  <div class="abs zip"></div>
+
+  <div class="c logo">ХВОСТИК<svg style="color:#f2b33d"><use href="#paw"/></svg>ГАВ</div>
+  <div class="c slogan">Забота о здоровье вашего Хвостика</div>
+
+  <!-- пёс обведён с упаковки (вектор), лапами держится за край белой плашки -->
+  <img class="abs pet" src="trace/dog.svg" alt="">
+
+  <div class="abs band">
+    <div class="for">КОРМ ДЛЯ СОБАК И ЩЕНКОВ</div>
+    <div class="big">−10%</div>
+    <div class="sub">НА ПЕРВЫЙ ЗАКАЗ</div>
+    <svg class="dots" viewBox="0 0 100 100"><g fill="#c2d153"><circle cx="50" cy="3" r="3"/><circle cx="83" cy="17" r="3"/><circle cx="97" cy="50" r="3"/><circle cx="83" cy="83" r="3"/><circle cx="50" cy="97" r="3"/><circle cx="17" cy="83" r="3"/><circle cx="3" cy="50" r="3"/><circle cx="17" cy="17" r="3"/></g></svg>
+    <div class="badge"><i>промокод</i><b>ХВОСТИК10</b><span>на сайте<br>при оформлении</span></div>
+  </div>
+
+  <div class="abs packs">
+    <img src="../public/img/p/gav-assorti.png"><img src="../public/img/p/gav-small.png"><img src="../public/img/p/gav-chicken.png"><img src="../public/img/p/gav-puppy.png">
+  </div>
+  <div class="abs price"><span class="from">от</span><b>1055 ₽</b><svg style="color:#c2d153"><use href="#arrow"/></svg></div>
+
+  <div class="abs icons">
+    <div><div class="o"><svg><use href="#truck"/></svg></div><p>доставка<br>бесплатно</p></div>
+    <div><div class="o"><svg><use href="#pin"/></svg></div><p>пункты 5Post<br>в СПб</p></div>
+    <div><div class="o"><svg><use href="#meat"/></svg></div><p>больше 35%<br>мяса</p></div>
+    <div><div class="o"><b>8</b></div><p>рецептов<br>в линейке</p></div>
+  </div>
+
+  <div class="abs howto"><h4>КАК ЗАКАЗАТЬ:</h4>отсканируйте QR, выберите корм, введите <b>ХВОСТИК10</b> — скидка 10% на первый заказ. Пакеты 2, 10 и 15 кг.</div>
+  <div class="abs qr"><img src="qr.png"></div><div class="abs qrcap">наш магазин</div>
+
+  <div class="guide trim"></div><div class="guide safe"></div>
+</div><div class="cap">Сторона 2 · Хвостик.ГАВ</div></div>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+if(q.has('guides'))document.body.classList.add('g');
+if(q.has('print'))document.body.classList.add('print');
+</script>
+</body>
+</html>

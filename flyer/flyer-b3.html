@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка B3 «Контур» (A6, 2 стороны)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap');
+/* A6 105×148 + 2 мм вылет = 109×152. Двусторонняя печать: важное ≥ 7 мм от реза = ≥ 9 мм от края холста */
+@page{size:109mm 152mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Onest',sans-serif;background:#d9d6d0;-webkit-font-smoothing:antialiased}
+.sheet{display:flex;gap:10mm;padding:10mm;width:max-content}
+.print .sheet{display:block;padding:0;gap:0}
+.print body,body.print{background:#fff}
+.f{position:relative;width:109mm;height:152mm;overflow:hidden;background:#fff;color:#1d1c22;--red:#e63a2e;--grey:#e3e1e6;--mute:#6a6577;break-after:page}
+.f{box-shadow:0 2mm 6mm rgba(0,0,0,.18)}
+html.print .f{box-shadow:none}
+.abs{position:absolute}
+.c{position:absolute;left:0;right:0;text-align:center}
+.frame{position:absolute;inset:9mm;border:.25mm solid #1d1c22}
+.logo{display:flex;align-items:center;justify-content:center;gap:2mm;font-size:4.2mm;font-weight:800;letter-spacing:2.2mm;line-height:1}
+.logo svg{width:4.6mm;height:4.6mm;color:var(--red)}
+.sub{font-size:2.2mm;font-weight:500;letter-spacing:.8mm;color:#8a8694;line-height:1}
+.out{color:transparent;-webkit-text-stroke:.45mm var(--red);font-weight:900;line-height:1}
+
+/* ---------- лицо ---------- */
+.A .logo{top:14mm}
+.A .sub{top:20.4mm}
+.A .num{top:25.5mm;font-size:28mm;letter-spacing:-1mm}
+.A .pk{position:absolute;top:53mm;height:53mm;filter:drop-shadow(0 2mm 2.2mm rgba(0,0,0,.28))}
+.A .off{top:109mm;font-size:3.4mm;font-weight:900;letter-spacing:1.2mm;color:var(--red);line-height:1}
+.A .cats{top:115mm;font-size:2.5mm;font-weight:600;letter-spacing:.6mm;color:#4a4752;line-height:1}
+.hr{position:absolute;left:13mm;right:13mm;height:0;border-top:.25mm solid var(--grey)}
+.A .foot{position:absolute;left:13mm;right:13mm;top:123mm;height:16mm;display:flex;align-items:center;justify-content:space-between;gap:3mm}
+.A .foot p{font-size:2.4mm;line-height:1.5;color:#4a4752}
+.A .foot b{color:#1d1c22;font-weight:800}
+.A .foot img{width:16mm;height:16mm;display:block}
+
+/* ---------- оборот ---------- */
+.B .logo{top:14mm}
+.B .sub{top:20.4mm}
+.B .ttl{top:26.5mm;font-size:5.2mm;font-weight:900;letter-spacing:.2mm;line-height:1}
+.steps{position:absolute;left:13mm;right:13mm;top:35mm;list-style:none}
+.steps li{display:flex;align-items:center;gap:3.4mm;height:14mm;border-bottom:.25mm solid var(--grey)}
+.steps li:first-child{border-top:.25mm solid var(--grey)}
+.steps .n{flex:0 0 9mm;font-size:12mm;text-align:center;letter-spacing:-.4mm}
+.steps p{font-size:2.6mm;line-height:1.38;color:#4a4752}
+.steps p b{color:#1d1c22;font-weight:800}
+.code{position:absolute;left:50%;top:81.5mm;transform:translateX(-50%);border:.3mm dashed #1d1c22;padding:1.6mm 4.2mm;font-size:2.8mm;font-weight:600;white-space:nowrap;line-height:1.2}
+.code b{font-weight:900;letter-spacing:.5mm;color:var(--red)}
+.cols{position:absolute;left:13mm;right:13mm;top:92mm;display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.col{border:.25mm solid #1d1c22;height:25mm;padding:2.4mm 2.6mm 0;text-align:center}
+.col svg{width:3.4mm;height:3.4mm;color:var(--red)}
+.col b{display:block;font-size:2.7mm;font-weight:800;letter-spacing:.7mm;margin-top:.8mm}
+.col span{display:block;font-size:2.2mm;color:var(--mute);margin-top:.7mm;line-height:1.3}
+.col i{display:block;font-style:normal;font-size:5mm;-webkit-text-stroke:.3mm var(--red);margin-top:1.1mm;letter-spacing:-.2mm}
+.B .foot{position:absolute;left:13mm;right:13mm;top:122mm;height:17mm;display:flex;align-items:center;gap:3.4mm}
+.B .foot img{width:17mm;height:17mm;display:block;flex:0 0 17mm}
+.B .foot p{font-size:2.3mm;line-height:1.5;color:#4a4752}
+.B .foot b{color:#1d1c22;font-weight:800}
+
+/* направляющие: ?guides=1 */
+.g{display:none;position:absolute;pointer-events:none;z-index:50}
+.guides .g{display:block}
+.trim{inset:2mm;border:.2mm dashed red}.safe{inset:9mm;border:.2mm dashed #06f}
+</style>
+</head>
+<body>
+<script>
+const q=location.search;if(q.includes('guides'))document.documentElement.classList.add('guides');
+if(q.includes('print'))document.documentElement.classList.add('print');
+</script>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="12" cy="16" rx="5.2" ry="4.4"/><ellipse cx="5" cy="10" rx="2.1" ry="2.7"/><ellipse cx="9.3" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="14.7" cy="5.6" rx="2.2" ry="2.9"/><ellipse cx="19" cy="10" rx="2.1" ry="2.7"/></g></symbol>
+</svg>
+<div class="sheet">
+
+  <!-- ЛИЦО -->
+  <div class="f A">
+    <div class="frame"></div>
+    <div class="c logo"><svg><use href="#paw"/></svg>ХВОСТИК</div>
+    <div class="c sub">корм для кошек и собак</div>
+    <div class="c num out">−10%</div>
+    <img class="pk" style="left:27mm" src="../public/img/p/myau-steril.png" alt="">
+    <img class="pk" style="left:51.6mm" src="../public/img/p/gav-small.png" alt="">
+    <div class="c off">НА ПЕРВЫЙ ЗАКАЗ</div>
+    <div class="c cats">кошки · котята · собаки · щенки</div>
+    <div class="hr" style="top:120mm"></div>
+    <div class="foot"><p>промокод <b>ХВОСТИК10</b><br>доставка 0 ₽ до 5Post в СПб<br>от 960 ₽ за пакет</p><img src="qr.png" alt=""></div>
+    <div class="g trim"></div><div class="g safe"></div>
+  </div>
+
+  <!-- ОБОРОТ -->
+  <div class="f B">
+    <div class="frame"></div>
+    <div class="c logo"><svg><use href="#paw"/></svg>ХВОСТИК</div>
+    <div class="c sub">сухой корм · Санкт-Петербург</div>
+    <div class="c ttl">Как получить скидку</div>
+    <ul class="steps">
+      <li><span class="n out">1</span><p>Наведите камеру на <b>QR-код</b><br>и откройте наш магазин</p></li>
+      <li><span class="n out">2</span><p>Выберите корм: <b>8 рецептов</b><br>для кошек и собак любого возраста</p></li>
+      <li><span class="n out">3</span><p>Введите промокод при оформлении —<br><b>−10% на первый заказ</b></p></li>
+    </ul>
+    <div class="code">промокод <b>ХВОСТИК10</b></div>
+    <div class="cols">
+      <div class="col"><svg><use href="#paw"/></svg><b>ДЛЯ КОШЕК</b><span>4 рецепта · 1,5 и 10 кг</span><i class="out">от 960 ₽</i></div>
+      <div class="col"><svg><use href="#paw"/></svg><b>ДЛЯ СОБАК</b><span>4 рецепта · 2, 10 и 15 кг</span><i class="out">от 1055 ₽</i></div>
+    </div>
+    <div class="hr" style="top:119.5mm"></div>
+    <div class="foot"><img src="qr.png" alt=""><p><b>Доставка 0 ₽</b> до пунктов 5Post в СПб:<br>постаматы и кассы «Пятёрочки»<br>и «Перекрёстка». Заказ хранится 7 дней</p></div>
+    <div class="g trim"></div><div class="g safe"></div>
+  </div>
+
+</div>
+</body>
+</html>

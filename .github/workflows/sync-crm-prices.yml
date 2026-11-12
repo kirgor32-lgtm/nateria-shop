@@ -1,0 +1,58 @@
+name: Sync CRM prices → rebuild & publish site
+
+# ЦЕЛЬ: эта задача живёт на серверах GitHub, не на ПК Кирилла и не в Hermes.
+# Сейчас она ВЫКЛЮЧЕНА (только ручной запуск) — включить `schedule:` ниже,
+# когда CRM переедет на сервер с публичным адресом (см. docs/deploy-architecture.md).
+
+on:
+  workflow_dispatch: {}
+  # schedule:
+  #   - cron: '*/15 * * * *'   # раскомментировать после переезда CRM
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Подтянуть цены из CRM
+        env:
+          CRM_CATALOG_URL: ${{ secrets.CRM_CATALOG_URL }}   # напр. https://crm.хвостик.рф/api/public/catalog
+          CRM_SITE_KEY: ${{ secrets.CRM_SITE_KEY }}         # pk_... марки «Хвостик»
+        run: node scripts/fetch-crm-prices.mjs
+
+      - name: Есть изменения?
+        id: diff
+        run: |
+          if git diff --quiet -- src/prices.generated.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Собрать сайт
+        if: steps.diff.outputs.changed == 'true'
+        run: npm ci && npx vite build && npx vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs
+
+      - name: Закоммитить новые цены
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "crm-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/prices.generated.json
+          git commit -m "auto: цены из CRM $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin main
+
+      - name: Опубликовать на GitHub Pages
+        if: steps.diff.outputs.changed == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages

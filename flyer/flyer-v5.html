@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Хвостик — листовка А6 v5</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&display=swap');
+
+  /* Трим А6 = 105×148мм. Вылеты 2мм на сторону + отступ от линии реза 3мм = 5мм совокупно. */
+  @page { size: 109mm 152mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 109mm; height: 152mm; font-family: 'Onest', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .page { position: relative; width: 109mm; height: 152mm; overflow: hidden; background: #fff8f0; }
+
+  .blob1 { position: absolute; top: -20mm; left: -22mm; width: 70mm; height: 70mm; border-radius: 50%; background: #ffe8d6; }
+  .blob2 { position: absolute; bottom: 24mm; right: -22mm; width: 55mm; height: 55mm; border-radius: 50%; background: #eeebff; }
+
+  .logo { position: absolute; top: 7mm; left: 7mm; display: flex; align-items: center; gap: 2.2mm; z-index: 2; }
+  .logo svg { width: 6.2mm; height: 6.2mm; }
+  .logo span { font-weight: 800; font-size: 4.6mm; color: #2e2c38; letter-spacing: -.2px; }
+
+  .kicker { position: absolute; top: 15mm; left: 7mm; width: 66mm; font-size: 3.1mm; font-weight: 700; color: #5242d6;
+    text-transform: uppercase; letter-spacing: .3px; line-height: 1.25; z-index: 2; }
+
+  /* стикер-скидка */
+  .sticker { position: absolute; top: 8mm; right: 8mm; width: 24mm; height: 24mm; border-radius: 50%; background: #ff6a00;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(10deg);
+    box-shadow: 0 3mm 5mm rgba(255,106,0,.35); z-index: 3; }
+  .sticker b { color: #fff; font-size: 6.8mm; font-weight: 900; line-height: .85; }
+  .sticker span { color: #fff; font-size: 2mm; font-weight: 800; text-align: center; line-height: 1.1; margin-top: .5mm; }
+
+  .hero { position: absolute; top: 25mm; left: 0; right: 0; height: 48mm; display: flex; align-items: flex-end; justify-content: center; gap: 7mm; z-index: 2; }
+  .hero img { height: 48mm; filter: drop-shadow(0 3mm 4mm rgba(46,44,56,.18)); }
+
+  .tag { position: absolute; top: 71mm; left: 50%; transform: translateX(-50%); z-index: 3;
+    background: #2e2c38; color: #fff; border-radius: 2.4mm; padding: 1.8mm 3.6mm; display: flex; align-items: baseline; gap: 2mm; white-space: nowrap; }
+  .tag .old { font-size: 3mm; color: #9a95ad; text-decoration: line-through; font-weight: 600; }
+  .tag .new { font-size: 4.6mm; font-weight: 800; color: #fff; }
+  .tag .new em { color: #ffb066; font-style: normal; }
+  .tag .per { font-size: 2.5mm; color: #c9c2ff; font-weight: 600; }
+
+  .headline { position: absolute; top: 85mm; left: 7mm; right: 7mm; text-align: center; font-weight: 800; font-size: 5.4mm; line-height: 1.18; color: #2e2c38; z-index: 2; }
+  .headline em { color: #ff6a00; font-style: normal; }
+
+  .coupon { position: absolute; top: 100mm; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 1.8mm;
+    padding: 1.7mm 3.8mm; border: .45mm dashed #c9c2ff; border-radius: 2.4mm; background: #fff; z-index: 2; white-space: nowrap; }
+  .coupon .lbl { font-size: 2.7mm; font-weight: 600; color: #8a8694; }
+  .coupon b { font-size: 4mm; font-weight: 800; color: #5242d6; letter-spacing: .4px; }
+
+  .pills { position: absolute; top: 111mm; left: 7mm; right: 7mm; display: flex; gap: 2.4mm; z-index: 2; }
+  .pill { flex: 1; height: 8.6mm; background: #fff; border: .3mm solid #ece6ff; border-radius: 2.6mm;
+    padding: 0 2.2mm; display: flex; align-items: center; gap: 1.6mm; }
+  .pill .ok { flex: none; width: 3.8mm; height: 3.8mm; border-radius: 50%; background: #5242d6; color: #fff; font-size: 2.3mm; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; }
+  .pill b { font-size: 2.75mm; font-weight: 700; color: #2e2c38; line-height: 1.12; }
+
+  .cta { position: absolute; left: 5mm; right: 5mm; bottom: 5mm; top: 124mm; background: #2e2c38; border-radius: 5mm;
+    display: flex; align-items: center; gap: 3.4mm; padding: 3.4mm; z-index: 2; }
+  .cta img { width: 18mm; height: 18mm; border-radius: 2.2mm; background: #fff; padding: 1.3mm; flex: none; }
+  .cta-text b { display: block; font-size: 3.3mm; font-weight: 800; color: #fff; line-height: 1.16; margin-bottom: 1mm; }
+  .cta-text .url { font-size: 2.7mm; font-weight: 700; color: #c9c2ff; word-break: break-all; display: block; }
+
+  .guides .trim { position: absolute; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; outline: .35mm dashed rgba(255,0,0,.75); z-index: 9; }
+  .guides .safe { position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; outline: .35mm dashed rgba(0,120,220,.9); z-index: 9; }
+  .guides .label { position: absolute; font-family: monospace; font-size: 2.6mm; color: #000; background: #fff; padding: .3mm 1mm; z-index: 10; }
+</style>
+</head>
+<body>
+  <div class="page" id="page">
+    <div class="blob1"></div>
+    <div class="blob2"></div>
+
+    <div class="logo">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="41" r="22.5" fill="#5242d6"/><g transform="translate(32 41) scale(.9)" fill="#fff">
+        <path d="M0 1.5 C7.5 1.5 12 8 12 12.6 C12 17 8.4 18.6 5.2 17.6 C3 16.9 1.6 16.4 0 16.4 C-1.6 16.4 -3 16.9 -5.2 17.6 C-8.4 18.6 -12 17 -12 12.6 C-12 8 -7.5 1.5 0 1.5 Z"/>
+        <ellipse cx="-13" cy="-3" rx="4.4" ry="5.6" transform="rotate(-24 -13 -3)"/>
+        <ellipse cx="-5" cy="-9.6" rx="4.7" ry="6" transform="rotate(-8 -5 -9.6)"/>
+        <ellipse cx="5" cy="-9.6" rx="4.7" ry="6" transform="rotate(8 5 -9.6)"/>
+        <ellipse cx="13" cy="-3" rx="4.4" ry="5.6" transform="rotate(24 13 -3)"/>
+      </g></svg>
+      <span>Хвостик</span>
+    </div>
+
+    <div class="kicker">Сухой корм<br>для кошек и собак</div>
+
+    <div class="sticker"><b>-10%</b><span>на первый<br>заказ</span></div>
+
+    <div class="hero">
+      <img src="myau-assorti.png" alt="Хвостик.МЯУ — корм для кошек">
+      <img src="gav-assorti.png" alt="Хвостик.ГАВ — корм для собак">
+    </div>
+
+    <div class="tag"><span class="old">960 ₽</span><span class="new">от <em>864 ₽</em></span><span class="per">за пакет</span></div>
+
+    <div class="headline">Порадуем <em>вашего</em> питомца вместе</div>
+
+    <div class="coupon"><span class="lbl">промокод</span><b>ХВОСТИК10</b></div>
+
+    <div class="pills">
+      <div class="pill"><div class="ok">✓</div><b>Мясо на 1-м месте</b></div>
+      <div class="pill"><div class="ok">✓</div><b>Доставка бесплатно</b></div>
+    </div>
+
+    <div class="cta">
+      <img src="qr.png" alt="QR-код">
+      <div class="cta-text">
+        <b>Сканируйте — оформите заказ со скидкой</b>
+        <span class="url">kirgor32-lgtm.github.io/hvostik-shop</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    if (location.search.includes('guides')) {
+      const p = document.getElementById('page'); p.classList.add('guides')
+      const trim = document.createElement('div'); trim.className = 'trim'; p.appendChild(trim)
+      const safe = document.createElement('div'); safe.className = 'safe'; p.appendChild(safe)
+      const l1 = document.createElement('div'); l1.className='label'; l1.style.top='0'; l1.style.left='2mm'; l1.textContent='линия реза'; p.appendChild(l1)
+      const l2 = document.createElement('div'); l2.className='label'; l2.style.top='5mm'; l2.style.left='5mm'; l2.textContent='зона безопасности'; p.appendChild(l2)
+    }
+  </script>
+</body>
+</html>
