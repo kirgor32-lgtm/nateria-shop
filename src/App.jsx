@@ -1025,27 +1025,27 @@ function CompareTable({ ids, onRemove, onOpen }) {
   const n = items.length
   // 1–2 корма помещаются на любом телефоне; 3–4 — листаются вбок
   const cols = { gridTemplateColumns: `repeat(${n}, minmax(${n > 2 ? 132 : 0}px, 1fr))` }
-  const Label = ({ children }) => <div className="col-span-full mt-2 border-t border-gray-2 pt-1.5 text-xs text-txt-2"><span className="sticky left-0">{children}</span></div>
+  const Label = ({ children }) => <div className="col-span-full mt-1.5 border-t border-gray-2 pt-1 text-[11px] leading-4 text-txt-2 sm:mt-2 sm:pt-1.5 sm:text-xs"><span className="sticky left-0">{children}</span></div>
   const val = (p, k) => p.composition?.analysis?.[k] || '—'
   return (
-    <div className="-mx-5 overflow-x-auto px-5 pb-1">
+    <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:-mx-5 sm:px-5">
       <div className="grid gap-x-3 text-sm [overflow-wrap:anywhere]" style={cols}>
         {items.map((p) => (
-          <div key={p.id} className="relative flex min-w-0 flex-col items-start gap-2 rounded-[2px] bg-gray-1 p-3">
+          <div key={p.id} className="relative flex min-w-0 flex-col items-start gap-1 sm:gap-2 rounded-[2px] bg-gray-1 p-2 sm:p-3">
             <button onClick={() => onRemove(p.id)} aria-label="Убрать из сравнения" className="absolute right-2 top-2 text-txt-2 hover:text-ink"><X className="size-4" /></button>
-            <div className={cn('flex size-10 flex-none items-center justify-center rounded-[2px] p-1', p.bg)}><img src={img(p.id)} alt="" className="max-h-full w-auto" /></div>
-            <Link to={productPath(p)} onClick={onOpen} className="min-w-0 leading-snug hover:text-violet-dark"><b>{p.line}</b><br />{p.ageLabel}, {p.taste}</Link>
+            <div className={cn('flex size-8 flex-none sm:size-10 items-center justify-center rounded-[2px] p-1', p.bg)}><img src={img(p.id)} alt="" className="max-h-full w-auto" /></div>
+            <Link to={productPath(p)} onClick={onOpen} className="min-w-0 text-[13px] leading-tight hover:text-violet-dark sm:text-sm sm:leading-snug"><b>{p.line}</b><br />{p.ageLabel}, {p.taste}</Link>
           </div>
         ))}
         <Label>Главное в составе</Label>
-        {items.map((p) => <div key={p.id} className="min-w-0 leading-snug">{p.composition?.top || '—'}</div>)}
+        {items.map((p) => <div key={p.id} className={cn('min-w-0 text-[13px] leading-snug sm:text-sm', !full && 'line-clamp-2 sm:line-clamp-none')}>{p.composition?.top || '—'}</div>)}
         {compareRows.map(([t, k]) => (
           <Fragment key={k}>
             <Label>{t}</Label>
-            {items.map((p) => <div key={p.id} className="font-bold">{val(p, k)}</div>)}
+            {items.map((p) => <div key={p.id} className="font-bold leading-5">{val(p, k)}</div>)}
           </Fragment>
         ))}
-        <div className="col-span-full mt-2 border-t border-gray-2 pt-2">
+        <div className="col-span-full mt-1.5 border-t border-gray-2 pt-2 sm:mt-2">
           <button onClick={() => setFull(!full)} aria-expanded={full} className="sticky left-0 text-sm font-semibold underline hover:text-violet-dark">{full ? 'Скрыть полный состав' : 'Показать полный состав'}</button>
         </div>
         {full && items.map((p) => <p key={p.id} className="mt-2 min-w-0 text-xs leading-relaxed">{p.composition?.full || 'Полный состав запросили у производителя, скоро добавим.'}</p>)}
@@ -1140,8 +1140,15 @@ function Panels({ nav }) {
       {/* сравнение составов — выбрали на карточках в каталоге, смотрим рядом без переходов */}
       <Sheet open={st.panel === 'compare'} onOpenChange={(o) => !o && close()}>
         <SheetContent className="flex w-full flex-col gap-0 p-0 data-[side=right]:w-full sm:max-w-[760px] data-[side=right]:sm:max-w-[760px]">
-          {head('Сравнение состава', `${st.compare.length} из 4 кормов`)}
-          <div className="flex-1 overflow-y-auto p-5">
+          {/* на телефоне — компактная шапка, «очистить» в ней же: таблица помещается в один экран без прокрутки */}
+          <SheetHeader className="border-b border-gray-2 px-4 py-3 sm:p-5">
+            <SheetTitle className="text-xl font-extrabold sm:text-2xl">Сравнение состава</SheetTitle>
+            <SheetDescription>
+              {st.compare.length} из 4 кормов
+              {!!st.compare.length && <span className="sm:hidden"> · <button onClick={st.clearCompare} className="underline hover:text-ink">очистить</button></span>}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto p-4 pb-3 sm:p-5">
             {!st.compare.length ? (
               <Empty icon={Scale} text="отметьте «сравнить состав» на карточках кормов в каталоге" action={toCatalog} />
             ) : (
@@ -1149,7 +1156,7 @@ function Panels({ nav }) {
             )}
           </div>
           {!!st.compare.length && (
-            <div className="border-t border-gray-2 p-5">
+            <div className="hidden border-t border-gray-2 p-5 sm:block">
               <button onClick={st.clearCompare} className="text-sm text-txt-2 underline hover:text-ink">Очистить сравнение</button>
             </div>
           )}
