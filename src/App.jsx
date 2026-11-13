@@ -413,7 +413,7 @@ function ProductCard({ p }) {
         <div className="pointer-events-none absolute inset-x-2 top-2 flex items-stretch justify-between sm:inset-x-3 sm:top-3">
           <span className="rounded-[2px] border border-ink bg-white/90 px-2 py-1 text-xs font-bold">{p.kind === 'cat' ? 'Кошкам' : 'Собакам'}</span>
           <button onClick={() => st.toggleFav(p.id)} aria-label={faved ? 'Убрать из избранного' : 'В избранное'} aria-pressed={faved}
-            className="pointer-events-auto relative flex w-[26px] shrink-0 items-center justify-center rounded-[2px] border border-ink bg-white/90 hover:bg-white after:absolute after:-inset-2 after:content-['']">
+            className="pointer-events-auto relative flex w-[26px] shrink-0 items-center justify-center rounded-full hover:bg-white/90 after:absolute after:-inset-2 after:content-['']">
             <Heart className={cn('size-4', faved && 'fill-tang text-tang')} />
           </button>
         </div>
