@@ -292,14 +292,14 @@ function Hero({ nav }) {
           <p className="mt-5 hidden max-w-[470px] text-lg leading-snug sm:block xl:text-xl">
             Nateria для кошек и Nateria для собак. Есть рецепты для взрослых, котят, щенков, стерилизованных кошек, мелких пород и лечебно-профилактические линейки.
           </p>
-          <div className="col-start-1 mt-3 flex min-w-0 flex-col gap-2 self-start sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
-            <Link to={kinds.cat.path} className={cn(inkBtn, 'flex h-10 items-center justify-center px-3 text-[14px] sm:h-[52px] sm:px-7 sm:text-base')}>Корм для кошек</Link>
-            <Link to={kinds.dog.path} className="flex h-10 items-center justify-center rounded-[2px] border border-ink bg-white px-3 text-[14px] font-semibold hover:bg-gray-1 sm:h-[52px] sm:px-7 sm:text-base">Корм для собак</Link>
+          <div className="col-span-2 mt-4 grid min-w-0 grid-cols-2 gap-2 sm:mt-8 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
+            <Link to={kinds.cat.path} className={cn(inkBtn, 'flex h-11 items-center justify-center whitespace-nowrap px-2 text-[14px] sm:h-[52px] sm:px-7 sm:text-base')}>Корм для кошек</Link>
+            <Link to={kinds.dog.path} className="flex h-11 items-center justify-center whitespace-nowrap rounded-[2px] border border-ink bg-white px-2 text-[14px] font-semibold hover:bg-gray-1 sm:h-[52px] sm:px-7 sm:text-base">Корм для собак</Link>
           </div>
         </div>
-        <div className="pointer-events-none col-start-2 row-span-2 row-start-2 mt-2 flex shrink-0 sm:hidden md:flex items-end justify-center sm:absolute sm:mt-0 sm:inset-x-0 sm:bottom-0 sm:top-0 sm:items-end sm:justify-end sm:pb-0 sm:pr-4 md:pr-6">
-          <img src={img('hero-cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[110px] sm:w-[200px] md:w-[240px] xl:w-[320px]" />
-          <img src={img('hero-dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-1 h-auto w-[110px] sm:ml-2 sm:w-[200px] md:w-[240px] xl:w-[320px]" />
+        <div className="pointer-events-none col-start-2 row-start-2 mt-2 flex shrink-0 sm:hidden md:flex items-end justify-center sm:absolute sm:mt-0 sm:inset-x-0 sm:bottom-0 sm:top-0 sm:items-end sm:justify-end sm:pb-0 sm:pr-4 md:pr-6">
+          <img src={img('hero-cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[60px] min-[400px]:w-[68px] sm:w-[200px] md:w-[115px] lg:w-[240px] xl:w-[280px]" />
+          <img src={img('hero-dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-1 h-auto w-[60px] min-[400px]:w-[68px] sm:ml-2 sm:w-[200px] md:w-[115px] lg:w-[240px] xl:w-[280px]" />
                   </div>
       </div>
       <div className="no-scrollbar mt-3 grid grid-flow-col gap-3 overflow-x-auto md:grid-cols-4">
