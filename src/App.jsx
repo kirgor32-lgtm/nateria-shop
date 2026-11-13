@@ -90,7 +90,7 @@ function MaxIcon({ className }) {
 }
 function MessengerButtons({ className, stack }) {
   // кнопки всегда одной ширины: на телефоне — во всю ширину одна под другой, на компьютере — две равные колонки
-  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-gray-1 px-4 text-sm font-semibold hover:bg-gray-2'
+  const c = 'flex h-11 w-full items-center gap-2 rounded-[2px] bg-gray-2 px-4 text-sm font-semibold transition hover:bg-gray-3/50'
   return (
     <div className={cn('grid gap-2', !stack && 'sm:w-fit sm:grid-cols-2', className)}>
       <a href={contacts.telegram} target="_blank" rel="noopener nofollow" className={c}><TgIcon className="size-5" /> Написать в Telegram</a>
@@ -298,8 +298,8 @@ function Hero({ nav }) {
           </div>
         </div>
         <div className="pointer-events-none col-start-2 row-span-2 row-start-2 mt-2 flex shrink-0 sm:hidden md:flex items-end justify-center sm:absolute sm:mt-0 sm:inset-x-0 sm:bottom-0 sm:top-0 sm:items-end sm:justify-end sm:pb-0 sm:pr-4 md:pr-6">
-          <img src={img('cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[110px] drop-shadow-lg sm:w-[200px] md:w-[240px] xl:w-[320px]" />
-          <img src={img('dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-1 h-auto w-[110px] drop-shadow-lg sm:ml-2 sm:w-[200px] md:w-[240px] xl:w-[320px]" />
+          <img src={img('hero-cat-sterile-turkey-lamb')} {...IMG} alt="Упаковка корма Nateria для стерилизованных кошек" fetchPriority="high" className="relative z-10 h-auto w-[110px] sm:w-[200px] md:w-[240px] xl:w-[320px]" />
+          <img src={img('hero-dog-small-beef-lamb')} {...IMG} alt="Упаковка корма Nateria для собак мелких пород" fetchPriority="high" className="relative z-10 ml-1 h-auto w-[110px] sm:ml-2 sm:w-[200px] md:w-[240px] xl:w-[320px]" />
                   </div>
       </div>
       <div className="no-scrollbar mt-3 grid grid-flow-col gap-3 overflow-x-auto md:grid-cols-4">
@@ -506,7 +506,7 @@ function Checks() {
 
 function PostCard({ p, H = 'h3' }) {
   return (
-    <Link to={`blog/${p.slug}/`} className="group flex min-w-[260px] flex-col lg:min-w-0 rounded-[2px] border border-gray-2 bg-white text-left transition hover:shadow-card">
+    <Link to={`blog/${p.slug}/`} className="group flex min-w-[260px] flex-col lg:min-w-0 rounded-[2px] border border-ink bg-white text-left transition">
       <div className={cn('flex h-[150px] items-end justify-center overflow-hidden', p.tone)}>
         <img src={img(p.img)} {...IMG} loading="lazy" alt="" className="h-[130px] w-auto transition group-hover:scale-105" />
       </div>
@@ -735,7 +735,7 @@ function ProductPage({ p }) {
       <Crumbs items={[[k.menu, k.path], [cap(p.short), productPath(p)]]} />
       <article className="wrap grid gap-8 pb-14 pt-5 md:grid-cols-[1fr_1.05fr] lg:gap-14">
         <div className={cn('relative flex h-[360px] items-center justify-center rounded-[2px] p-6 md:h-[520px]', p.bg)}>
-          <img src={img(p.id)} {...IMG} fetchPriority="high" alt={`Упаковка ${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain drop-shadow-xl" />
+          <img src={img(p.id)} {...IMG} fetchPriority="high" alt={`Упаковка ${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain" />
           <FavBtn faved={st.fav.includes(p.id)} onClick={() => st.toggleFav(p.id)} className="right-4 top-4 sm:right-4 sm:top-4" />
         </div>
         <div className="flex flex-col">
