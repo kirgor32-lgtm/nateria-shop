@@ -22,7 +22,7 @@ for (const r of list) {
 fs.writeFileSync(path.join(dist, '404.html'), page('__not-found__/'))
 
 const today = new Date().toISOString().slice(0, 10)
-const indexable = list.filter((r) => !['privacy', 'consent'].includes(r.page))
+const indexable = list.filter((r) => r.type !== 'thanks' && !['privacy', 'consent'].includes(r.page))
 const prio = (r) => (r.type === 'home' ? '1.0' : r.type === 'kind' ? '0.9' : r.type === 'product' ? '0.8' : '0.5')
 fs.writeFileSync(path.join(dist, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

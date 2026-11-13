@@ -28,6 +28,7 @@ const byId = (id) => products.find((p) => p.id === id)
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1)
 const kg = (w) => parseFloat(w.replace(',', '.')) / (w.includes('кг') ? 1 : 1000)
 const perKg = (v) => Math.round(v.price / kg(v.w))
+const THANKS_PATH = 'spasibo/'
 const IMG = { width: 240, height: 528 } // размеры фото упаковок (против сдвига вёрстки)
 
 export default function App({ path = '' }) {
@@ -56,6 +57,7 @@ function Shell() {
     case 'blog': page = <BlogPage />; break
     case 'post': page = <PostPage post={posts.find((x) => x.slug === route.slug)} />; break
     case 'page': page = <TextPage id={route.page} topic={topic} setTopic={setTopic} />; break
+    case 'thanks': page = <ThanksPage nav={nav} />; break
     default: page = <NotFound />
   }
   return (
@@ -566,6 +568,7 @@ function Consent({ checked, onChange, err }) {
 
 function LeadForm({ topic, compact, onSubmit, cta = 'Отправить', doneText }) {
   const st = useStore()
+  const { navigate } = useRoute()
   // галочка согласия НЕ стоит заранее — согласие должно быть активным действием (152-ФЗ)
   const [f, setF] = useState({ name: st.user?.name || '', phone: st.user?.phone || '', msg: '', ok: false })
   const [err, setErr] = useState({})
@@ -584,7 +587,12 @@ function LeadForm({ topic, compact, onSubmit, cta = 'Отправить', doneTe
     setState('send')
     setTimeout(() => {
       if (onSubmit) onSubmit({ name: f.name.trim(), phone: f.phone })
-      else sendLead({ name: f.name.trim(), phone: f.phone, topic, msg: f.msg.trim() }) // заявка → CRM
+      else {
+        sendLead({ name: f.name.trim(), phone: f.phone, topic, msg: f.msg.trim() }) // заявка → CRM
+        try { sessionStorage.setItem(THANKS_KEY, JSON.stringify({ type: 'lead', name: f.name.trim(), text: doneText || '' })) } catch {}
+        sending.current = false
+        return navigate(THANKS_PATH)
+      }
       setState('done')
     }, 700)
   }
@@ -884,6 +892,56 @@ function TextPage({ id, topic, setTopic }) {
         </div>
       </section>
     </>
+  )
+}
+
+/* ---------------- страница «Спасибо» (после заказа и заявки) ---------------- */
+// данные о заказе/заявке передаём через sessionStorage: адрес /spasibo/ чистый, без личных данных в ссылке
+const THANKS_KEY = 'thanks'
+function ThanksPage({ nav }) {
+  const st = useStore()
+  const [t, setT] = useState(null)
+  useEffect(() => {
+    try { setT(JSON.parse(sessionStorage.getItem(THANKS_KEY) || 'null')) } catch { setT(null) }
+  }, [])
+  const order = t?.type === 'order'
+  const name = t?.name ? `, ${t.name}` : ''
+  const steps = order
+    ? [['Заказ сохранён', 'Его состав и статус — в личном кабинете.'],
+       ['Ждите смс', 'Когда заказ приедет в пункт выдачи 5Post, придёт смс с кодом для получения.'],
+       ['Заберите корм', 'Покажите код в пункте выдачи. Доставка бесплатная.']]
+    : null
+  return (
+    <section className="wrap py-14 sm:py-20">
+      <div className="mx-auto max-w-[640px] text-center">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-violet-dark text-white"><Check className="size-8" /></div>
+        <h1 className="mt-5 text-[32px] font-extrabold leading-tight sm:text-[40px]">Спасибо{name}!</h1>
+        <p className="mt-3 text-lg text-txt-2">
+          {order ? `Заказ №${t.n} принят.` : t?.type === 'lead' ? (t.text ? cap(t.text.replace(/^Спасибо[,!.]?\s*/, '')) : 'Заявка отправлена, скоро ответим.') : 'Мы получили ваше обращение.'}
+          {crmEnabled ? '' : ' Это демо — данные никуда не ушли.'}
+        </p>
+      </div>
+      {steps && (
+        <ol className="mx-auto mt-10 grid max-w-[900px] gap-3 sm:grid-cols-3">
+          {steps.map(([h, d], i) => (
+            <li key={h} className="rounded-[2px] bg-gray-1 p-5">
+              <div className="text-sm font-bold text-violet-dark">Шаг {i + 1}</div>
+              <div className="mt-1 text-lg font-bold">{h}</div>
+              <p className="mt-1 text-sm text-txt-2">{d}</p>
+            </li>
+          ))}
+        </ol>
+      )}
+      <div className="mt-10 flex flex-wrap justify-center gap-3">
+        {order && <button onClick={() => st.setPanel('profile')} className={cn(inkBtn, 'flex items-center')}>Мои заказы</button>}
+        <button onClick={() => nav.show({})} className={cn(order ? 'flex h-11 items-center rounded-[2px] border border-ink bg-white px-6 text-sm font-semibold hover:bg-gray-1' : inkBtn, 'flex items-center')}>Вернуться в каталог</button>
+      </div>
+      <div className="mx-auto mt-12 max-w-[640px] text-center">
+        <div className="font-bold">Остались вопросы?</div>
+        <p className="mt-1 text-sm text-txt-2">{contacts.phone} · {contacts.hours}</p>
+        <MessengerButtons className="mx-auto mt-4 max-w-[460px] sm:w-full" />
+      </div>
+    </section>
   )
 }
 
@@ -1246,6 +1304,7 @@ function Empty({ icon: I, text, action }) {
 // Оформление как у крупных зоомагазинов: вход по коду → (новый покупатель — короткая анкета) → пункт выдачи
 function Checkout() {
   const st = useStore()
+  const { navigate } = useRoute()
   const [done, setDone] = useState(null) // оформленный заказ
   const [point, setPoint] = useState('') // адрес текстом, если не нашли пункт на карте
   const [pt, setPt] = useState(null) // пункт, выбранный на карте
@@ -1264,7 +1323,11 @@ function Checkout() {
     setBusy(true)
     setTimeout(() => {
       const o = st.placeOrder({ name: fullName, phone: st.user.phone, delivery: `5Post: ${where}` })
-      setDone(o); setBusy(false); sending.current = false
+      try { sessionStorage.setItem(THANKS_KEY, JSON.stringify({ type: 'order', n: o.n, name: st.user?.name || '' })) } catch {}
+      setBusy(false); sending.current = false
+      track('order_done', { n: o.n })
+      st.setCheckout(false)
+      navigate(THANKS_PATH)
     }, 500)
   }
   const box = (wide, kids) => <DialogContent className={cn('max-h-[94dvh] overflow-y-auto rounded-[2px] bg-gray-1', wide ? 'max-w-[960px] p-5 sm:max-w-[960px] sm:p-7' : 'max-w-[520px] p-7')}>{kids}</DialogContent>

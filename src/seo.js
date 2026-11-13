@@ -95,6 +95,7 @@ export function routes() {
     { path: pages.blog.path, type: 'blog' },
     ...posts.map((p) => ({ path: `blog/${p.slug}/`, type: 'post', slug: p.slug })),
     ...['delivery', 'returns', 'about', 'contacts', 'faq', 'privacy', 'consent'].map((k) => ({ path: pages[k].path, type: 'page', page: k })),
+    { path: 'spasibo/', type: 'thanks' },
   ]
   return r
 }
@@ -159,6 +160,11 @@ export function head(route) {
       if (route.page === 'privacy' || route.page === 'consent') robots = 'noindex, follow'
       break
     }
+    case 'thanks':
+      title = 'Спасибо! | Nateria'
+      desc = 'Заказ или заявка приняты.'
+      robots = 'noindex, nofollow'
+      break
     default:
       title = 'Страница не найдена | Nateria'
       desc = 'Такой страницы нет. Перейдите в каталог кормов Nateria.'
