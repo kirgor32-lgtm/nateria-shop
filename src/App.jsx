@@ -1019,7 +1019,7 @@ function Messengers() {
     document.addEventListener('keydown', esc)
     return () => { document.removeEventListener('pointerdown', out); document.removeEventListener('keydown', esc) }
   }, [open])
-  const item = 'flex w-full items-center gap-2 rounded-full bg-white py-2 pl-2 pr-4 text-sm font-semibold hover:bg-gray-1'
+  const item = 'flex w-full items-center gap-2 rounded-full bg-white py-2 pl-2 pr-4 text-sm font-semibold hover:bg-gray-2'
   return (
     <div ref={box} className={cn('fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2 transition-[bottom]', lifted && 'max-sm:bottom-[76px]')}>
       {open && (
@@ -1523,12 +1523,12 @@ function LinkedMessengers() {
           if (info) {
             const bot = info.bots.find((b) => b.type === c)
             const on = info.linked.includes(c)
-            if (!bot) return <div key={c} className={cn(btn, 'bg-gray-1 text-txt-2')}><I className="size-6 opacity-50" />{channelNames[c]} скоро</div>
-            return <a key={c} href={botLink(bot)} target="_blank" rel="noreferrer" className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-1 hover:bg-gray-2')}><I className="size-6" />{channelNames[c]}{on && mark}</a>
+            if (!bot) return <div key={c} className={cn(btn, 'bg-gray-2 text-txt-2')}><I className="size-6 opacity-50" />{channelNames[c]} скоро</div>
+            return <a key={c} href={botLink(bot)} target="_blank" rel="noreferrer" className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-2 hover:bg-[#e9e8ec]')}><I className="size-6" />{channelNames[c]}{on && mark}</a>
           }
           const on = linked.includes(c) // демо: без CRM привязка хранится в браузере
           return (
-            <button key={c} type="button" onClick={() => toggle(c)} aria-pressed={on} className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-1 hover:bg-gray-2')}>
+            <button key={c} type="button" onClick={() => toggle(c)} aria-pressed={on} className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-2 hover:bg-[#e9e8ec]')}>
               <I className="size-6" />{channelNames[c]}{on && mark}
             </button>
           )
