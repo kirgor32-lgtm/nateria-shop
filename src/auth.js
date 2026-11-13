@@ -31,7 +31,7 @@ export async function authLive() {
   return live
 }
 export const authLiveNow = () => live === true
-const getSession = () => read('hv-session', null)
+const getSession = () => read('nt-session', null)
 let lastCheck = null // { phone, account } — ответ CRM после верного кода
 
 export const authConfig = {
@@ -52,14 +52,14 @@ const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } cat
 
 /* ---- привязка мессенджеров (демо: хранится в браузере, на сервере — в базе) ---- */
 export function linkedChannels(phone) {
-  return read('hv-linked', {})[digits(phone)] || []
+  return read('nt-linked', {})[digits(phone)] || []
 }
 export function setLinked(phone, channel, on) {
-  const all = read('hv-linked', {})
+  const all = read('nt-linked', {})
   const cur = new Set(all[digits(phone)] || [])
   on ? cur.add(channel) : cur.delete(channel)
   all[digits(phone)] = [...cur]
-  write('hv-linked', all)
+  write('nt-linked', all)
   return all[digits(phone)]
 }
 // Куда отправлять код: сначала Telegram, потом Max, иначе смс
@@ -67,10 +67,10 @@ export const pickChannel = (linked) => (linked.includes('telegram') ? 'telegram'
 
 /* ---- лимиты ---- */
 function limits(phone) {
-  const all = read('hv-auth', {})
+  const all = read('nt-auth', {})
   return { all, l: all[digits(phone)] || { sends: [], wrong: 0, lockUntil: 0 } }
 }
-const save = (phone, all, l) => { all[digits(phone)] = l; write('hv-auth', all) }
+const save = (phone, all, l) => { all[digits(phone)] = l; write('nt-auth', all) }
 
 export function lockLeft(phone) {
   const { l } = limits(phone)
@@ -125,7 +125,7 @@ export async function sendCode(phone, { trap = '', startedAt = 0, via = '', demo
   if (l.sends.length >= authConfig.maxSendsPerHour) return { error: 'Код можно запросить не больше 3 раз в час. Попробуйте позже.' }
   // демо: код генерируется в браузере и показывается на экране
   const code = String(Math.floor(1000 + Math.random() * 9000))
-  sessionStorage.setItem('hv-demo-code', code)
+  sessionStorage.setItem('nt-demo-code', code)
   l.sends.push(now)
   save(phone, all, l)
   return { channel: via === 'sms' ? 'sms' : pickChannel(demoLinked ?? linkedChannels(phone)), resendIn: authConfig.resendSeconds, demoCode: code }
@@ -138,15 +138,15 @@ export async function checkCode(phone, code, { move = false } = {}) {
     try {
       const r = await post('check-code', { phone: digits(phone), code, move, token: getSession()?.token })
       if (!r.ok) return { error: r.body.error || 'Неверный код' }
-      write('hv-session', { token: r.body.token, phone: digits(phone) })
+      write('nt-session', { token: r.body.token, phone: digits(phone) })
       lastCheck = { phone: digits(phone), account: r.body.account }
       return { ok: true }
     } catch { return { error: 'Нет связи с сервером. Попробуйте ещё раз.' } }
   }
   const { all, l } = limits(phone)
   if (l.lockUntil > Date.now()) return { error: 'Вход временно заблокирован. Попробуйте позже.' }
-  const ok = code === sessionStorage.getItem('hv-demo-code')
-  if (ok) { l.wrong = 0; save(phone, all, l); sessionStorage.removeItem('hv-demo-code'); return { ok: true } }
+  const ok = code === sessionStorage.getItem('nt-demo-code')
+  if (ok) { l.wrong = 0; save(phone, all, l); sessionStorage.removeItem('nt-demo-code'); return { ok: true } }
   l.wrong += 1
   if (l.wrong >= authConfig.maxWrongCodes) { l.lockUntil = Date.now() + authConfig.lockMinutes * 60e3; l.wrong = 0; save(phone, all, l); return { error: `Неверный код. Вход заблокирован на ${authConfig.lockMinutes} минут.` } }
   save(phone, all, l)
@@ -158,7 +158,7 @@ export async function checkCode(phone, code, { move = false } = {}) {
 // На сервере: GET /api/auth/account (после проверки кода). Демо — хранится в браузере.
 export async function findAccount(phone) {
   if (authLiveNow()) return lastCheck?.phone === digits(phone) ? lastCheck.account : null // занятость нового номера проверит CRM (move)
-  return read('hv-accounts', {})[digits(phone)] || null
+  return read('nt-accounts', {})[digits(phone)] || null
 }
 export async function saveAccount(phone, acc) {
   if (authLiveNow()) {
@@ -166,10 +166,10 @@ export async function saveAccount(phone, acc) {
     await post('account', { token: getSession()?.token, account: acc }).catch(() => null)
     return
   }
-  const all = read('hv-accounts', {})
+  const all = read('nt-accounts', {})
   if (acc) all[digits(phone)] = acc
   else delete all[digits(phone)] // null — номер отвязан от аккаунта (сменили телефон)
-  write('hv-accounts', all)
+  write('nt-accounts', all)
 }
 
 // Какие боты подключены к номеру (по данным CRM). null — CRM недоступна или вход был в демо

@@ -999,7 +999,7 @@ function Footer({ nav }) {
           <Link to={pages.privacy.path} className="underline hover:text-white">Политика конфиденциальности</Link> ·{' '}
           <Link to={pages.consent.path} className="underline hover:text-white">Согласие на обработку данных</Link>
         </p>
-        <p>© 2026 Nateria, Санкт-Петербург. Демонстрационный сайт.{' '}<button onClick={() => window.dispatchEvent(new Event('hv-cookies'))} className="underline hover:text-white">Настройки cookie</button></p>
+        <p>© 2026 Nateria, Санкт-Петербург. Демонстрационный сайт.{' '}<button onClick={() => window.dispatchEvent(new Event('nt-cookies'))} className="underline hover:text-white">Настройки cookie</button></p>
       </div>
     </footer>
   )
@@ -1040,12 +1040,12 @@ function Messengers() {
 function CookieBanner() {
   const [show, setShow] = useState(false)
   useEffect(() => {
-    try { if (!localStorage.getItem('hv-cookies')) setShow(true) } catch { setShow(true) }
+    try { if (!localStorage.getItem('nt-cookies')) setShow(true) } catch { setShow(true) }
     const reopen = () => setShow(true)
-    window.addEventListener('hv-cookies', reopen)
-    return () => window.removeEventListener('hv-cookies', reopen)
+    window.addEventListener('nt-cookies', reopen)
+    return () => window.removeEventListener('nt-cookies', reopen)
   }, [])
-  const save = (v) => { try { localStorage.setItem('hv-cookies', JSON.stringify({ v, at: new Date().toISOString() })) } catch { /* пусто */ } setShow(false); window.dispatchEvent(new Event('hv-consent')) }
+  const save = (v) => { try { localStorage.setItem('nt-cookies', JSON.stringify({ v, at: new Date().toISOString() })) } catch { /* пусто */ } setShow(false); window.dispatchEvent(new Event('nt-consent')) }
   if (!show) return null
   const policy = <Link to={pages.privacy.path} className="text-violet-dark underline">политике конфиденциальности</Link>
   return (

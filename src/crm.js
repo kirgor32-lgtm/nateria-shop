@@ -9,7 +9,7 @@ export const crmConfig = {
 }
 
 export const crmEnabled = !!(crmConfig.api && crmConfig.key)
-const PENDING = 'hv-crm-pending' // заказы и заявки, которые не удалось отправить, — повторим при следующем заходе
+const PENDING = 'nt-crm-pending' // заказы и заявки, которые не удалось отправить, — повторим при следующем заходе
 
 let ready = null
 function load() {
@@ -44,13 +44,13 @@ async function sendOrQueue(kind, payload) {
   }
 }
 
-// Согласие на аналитические cookie: баннер сохраняет { v: 'all' | 'necessary' } в hv-cookies
-const analyticsAllowed = () => { try { return JSON.parse(localStorage.getItem('hv-cookies'))?.v === 'all' } catch { return false } }
+// Согласие на аналитические cookie: баннер сохраняет { v: 'all' | 'necessary' } в nt-cookies
+const analyticsAllowed = () => { try { return JSON.parse(localStorage.getItem('nt-cookies'))?.v === 'all' } catch { return false } }
 
 export function initCrm() {
   if (!crmEnabled) return
   const start = () => { if (analyticsAllowed()) load().then((crm) => crm?.startTracking()) }
-  window.addEventListener('hv-consent', start)
+  window.addEventListener('nt-consent', start)
   start()
   if (!readPending().length) return
   load().then(async (crm) => {

@@ -4,8 +4,10 @@ import './index.css'
 import App from './App.jsx'
 import { stripBase, match, head, applyHead } from './seo'
 import { initCrm } from './crm'
+import { migrateStorage } from './storage'
 
 if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
+migrateStorage()
 initCrm()
 
 const el = document.getElementById('root')
