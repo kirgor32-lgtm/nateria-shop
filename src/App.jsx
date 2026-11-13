@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, Fragment, lazy, Suspense } from '
 const PickupPicker = lazy(() => import('./PickupPicker'))
 import {
   Search, ShoppingBag, Heart, User, Menu, X, Minus, Plus, ChevronRight, Phone, Clock, LogOut, Package, Pencil,
-  Drumstick, Scale, HeartPulse, ShieldCheck, Factory, BadgeCheck, Check, Trash2, Loader2, Send, Truck, Sparkles, Sprout, Cookie,
+  Drumstick, Scale, HeartPulse, ShieldCheck, Factory, BadgeCheck, Check, Trash2, Loader2, Send, Truck, Sparkles, Cookie,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -103,7 +103,8 @@ function MessengerButtons({ className, stack }) {
 function Logo({ light, onClick }) {
   return (
     <Link to="" onClick={onClick} className="flex shrink-0 items-center gap-2.5" aria-label="Nateria — на главную">
-      <Sprout className={cn('size-5 min-[400px]:size-6 sm:size-7', light ? 'text-white' : 'text-red')} strokeWidth={2.2} />
+      {/* знак бренда — первая буква в квадрате, как у Wonderfur */}
+      <span aria-hidden className={cn('flex size-7 items-center justify-center rounded-[6px] text-[17px] font-black leading-none min-[400px]:size-8 min-[400px]:text-[19px] sm:size-9 sm:text-[22px]', light ? 'bg-white text-red' : 'bg-red text-white')}>N</span>
       <span className={cn('text-[15px] font-extrabold uppercase leading-none tracking-[0.14em] min-[400px]:text-[17px] sm:text-[19px] sm:tracking-[0.22em]', light && 'text-white')}>Nateria</span>
     </Link>
   )
