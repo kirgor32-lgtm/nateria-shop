@@ -1512,24 +1512,24 @@ function LinkedMessengers() {
   const [linked, setL] = useState(() => linkedChannels(st.user.phone))
   useEffect(() => { messengerInfo().then(setInfo) }, [])
   const toggle = (c) => setL(setLinked(st.user.phone, c, !linked.includes(c)))
-  const btn = 'flex h-11 items-center justify-center gap-2 rounded-[2px] text-sm font-semibold transition-colors'
-  const mark = <span className="flex items-center gap-0.5 text-xs font-medium"><Check className="size-3.5" />подключён</span>
+  const btn = 'flex h-11 min-w-0 items-center justify-center gap-2 px-2 rounded-[2px] text-sm font-semibold transition-colors'
+  const mark = <span className="flex items-center gap-0.5 whitespace-nowrap text-xs font-medium"><Check className="size-3.5" />подключён</span>
   return (
-    <div className="rounded-[2px] border border-gray-2 p-4">
+    <div className="rounded-[2px] border border-gray-2 p-4 @container">
       <div className="font-semibold">Коды для входа</div>
       <p className="mt-1 text-sm text-txt-2">Откройте нашего бота и нажмите «Авторизоваться» — коды будут приходить туда, а не по смс.</p>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className="mt-3 grid grid-cols-1 gap-2 @min-[270px]:grid-cols-2">
         {[['telegram', TgIcon], ['max', MaxIcon]].map(([c, I]) => {
           if (info) {
             const bot = info.bots.find((b) => b.type === c)
             const on = info.linked.includes(c)
             if (!bot) return <div key={c} className={cn(btn, 'bg-gray-2 text-txt-2')}><I className="size-6 opacity-50" />{channelNames[c]} скоро</div>
-            return <a key={c} href={botLink(bot)} target="_blank" rel="noreferrer" className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-2 hover:bg-[#e9e8ec]')}><I className="size-6" />{channelNames[c]}{on && mark}</a>
+            return <a key={c} href={botLink(bot)} target="_blank" rel="noreferrer" className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-2 hover:bg-[#e9e8ec]')}><I className="size-6" /><span className="flex min-w-0 flex-col items-start leading-tight"><span className="truncate">{channelNames[c]}</span>{on && mark}</span></a>
           }
           const on = linked.includes(c) // демо: без CRM привязка хранится в браузере
           return (
             <button key={c} type="button" onClick={() => toggle(c)} aria-pressed={on} className={cn(btn, on ? 'bg-violet-soft text-violet-dark' : 'bg-gray-2 hover:bg-[#e9e8ec]')}>
-              <I className="size-6" />{channelNames[c]}{on && mark}
+              <I className="size-6" /><span className="flex min-w-0 flex-col items-start leading-tight"><span className="truncate">{channelNames[c]}</span>{on && mark}</span>
             </button>
           )
         })}
