@@ -350,15 +350,16 @@ function Catalog({ filter, setFilter, title, fixedKind, as }) {
   const list = useMemo(() => products.filter((p) => matches(p, { ...filter, kind: fixedKind || filter.kind })), [filter, fixedKind])
   const kind = fixedKind || filter.kind
   // «котятам» и «щенкам» — отдельные кнопки; показываем только подходящие к выбранному виду
-  const ages = [['all', 'Любой возраст'], ['adult', 'Взрослым'], ...(kind !== 'dog' ? [['kitten', 'Котятам']] : []), ...(kind !== 'cat' ? [['puppy', 'Щенкам']] : [])]
-  const setKind = (v) => setFilter((f) => ({ ...f, kind: v, age: (v === 'cat' && f.age === 'puppy') || (v === 'dog' && f.age === 'kitten') ? 'all' : f.age }))
+  const ages = [['adult', 'Взрослым'], ...(kind !== 'dog' ? [['kitten', 'Котятам']] : []), ...(kind !== 'cat' ? [['puppy', 'Щенкам']] : [])]
+  const setKind = (v) => setFilter((f) => ({ ...f, kind: v, age: v === 'all' || (v === 'cat' && f.age === 'puppy') || (v === 'dog' && f.age === 'kitten') ? 'all' : f.age }))
   return (
     <section id="catalog" className="scroll-mt-44 py-14">
       <div className="wrap">
         {title && <SectionTitle as={as}>{title}</SectionTitle>}
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
           {!fixedKind && <Pills label="Для кого" value={filter.kind} onChange={setKind} items={[['all', 'Все корма'], ['cat', 'Кошкам'], ['dog', 'Собакам']]} />}
-          <Pills label="Возраст" small value={filter.age} onChange={(v) => setFilter((f) => ({ ...f, age: v }))} items={ages} />
+          {/* «все корма» — без деления по возрасту; повторный клик по возрасту снимает фильтр */}
+          {kind !== 'all' && <Pills label="Возраст" small value={filter.age} onChange={(v) => setFilter((f) => ({ ...f, age: f.age === v ? 'all' : v }))} items={ages} />}
         </div>
         {filter.q && (
           <p className="mt-4 text-[15px]">
