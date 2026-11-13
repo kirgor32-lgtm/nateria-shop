@@ -19,7 +19,7 @@ function usePersist(key, initial, clean = (x) => x) {
 }
 
 // Промокод с листовки: -10% на первый заказ (клиентская проверка — для небольшого магазина достаточно)
-export const PROMO = { code: 'ХВОСТИК10', kind: 'pct', value: 10, firstOrder: true } // запасной вариант, если CRM не подключена
+export const PROMO = { code: 'NATERIA10', kind: 'pct', value: 10, firstOrder: true } // запасной вариант, если CRM не подключена
 
 const byId = Object.fromEntries(products.map((p) => [p.id, p]))
 // В избранном — только существующие товары, без повторов (раньше там оставались id из старой версии сайта)
