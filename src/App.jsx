@@ -934,7 +934,7 @@ function ThanksPage({ nav }) {
       )}
       <div className="mt-10 flex flex-wrap justify-center gap-3">
         {order && <button onClick={() => st.setPanel('profile')} className={cn(inkBtn, 'flex items-center')}>Мои заказы</button>}
-        <button onClick={() => nav.show({})} className={cn(order ? 'flex h-11 items-center rounded-[2px] border border-ink bg-white px-6 text-sm font-semibold hover:bg-gray-1' : inkBtn, 'flex items-center')}>Вернуться в каталог</button>
+        <button onClick={() => nav.show({})} className={cn(inkBtn, order && 'border border-ink bg-white text-ink hover:bg-gray-1', 'flex items-center')}>Вернуться в каталог</button>
       </div>
       <div className="mx-auto mt-12 max-w-[640px] text-center">
         <div className="font-bold">Остались вопросы?</div>
