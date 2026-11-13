@@ -434,9 +434,9 @@ function ProductCard({ p }) {
           <button type="button" onClick={() => st.toggleCompare(p.id)} aria-pressed={compared} className={cn('flex-none rounded-[2px] px-1.5 py-0.5 text-[11px] font-semibold whitespace-nowrap', compared ? 'bg-violet-dark text-white' : 'bg-gray-1 text-txt-2 hover:bg-gray-2')}>{compared ? '✓ в сравнении' : 'сравнить состав'}</button>
         </div>
       )}
-      <div className="mt-auto flex gap-1.5 pt-3" role="group" aria-label="Фасовка">
+      <div className="mt-auto flex gap-1 pt-3 min-[400px]:gap-1.5" role="group" aria-label="Фасовка">
         {p.weights.map((w, i) => (
-          <button key={w.w} onClick={() => setVi(i)} aria-pressed={i === vi} className={cn('h-9 min-w-0 flex-1 whitespace-nowrap rounded-[2px] border px-1 text-sm sm:flex-none sm:px-3', i === vi ? 'border-ink bg-ink text-white' : 'border-gray-3 hover:border-ink')}>{w.w}</button>
+          <button key={w.w} onClick={() => setVi(i)} aria-pressed={i === vi} className={cn('h-9 min-w-0 flex-1 whitespace-nowrap rounded-[2px] border px-0 text-xs min-[400px]:px-1 min-[400px]:text-sm sm:flex-none sm:px-3', i === vi ? 'border-ink bg-ink text-white' : 'border-gray-3 hover:border-ink')}>{w.w.replace(' ', '\u202f')}</button>
         ))}
       </div>
       <div className="pt-3">
