@@ -165,3 +165,8 @@ body { -webkit-font-smoothing: antialiased; }
 .steady { display: grid; }
 .steady > span, .steady::after { grid-area: 1 / 1; }
 .steady::after { content: attr(data-other); visibility: hidden; pointer-events: none; }
+
+html { scrollbar-gutter: stable; }
+/* полоса прокрутки всегда занимает место, а при открытом окне/панели Radix не добавляет к body ещё и отступ справа —
+   иначе сайт сдвигался влево на ширину полосы, когда открывали вход, корзину или меню */
+html body[data-scroll-locked] { margin-right: 0 !important; }
