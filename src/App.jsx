@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import { StoreProvider, useStore, rub, fmtPhone } from './store'
 import { RouterProvider, useRoute, Link } from './router'
 import { sendCode, checkCode, linkedChannels, setLinked, channelNames, findAccount, saveAccount, authLiveNow, messengerInfo, botLink, setPassword, movePassword, linkEmail, emailOf, isEmail, phoneFor, authConfig } from './auth'
-import AuthFlow, { PassInput } from './AuthFlow'
+import AuthFlow, { PassInput, CallBox } from './AuthFlow'
 import { track, sendLead, crmEnabled, fetchOrderStatus } from './crm'
 import {
   BASE, contacts, seller, products, kinds, searchHints, benefits, stats, checks, posts, contactTopics, faq, pages,
@@ -1398,7 +1398,7 @@ function Login() {
   return <AuthFlow note="Войдите, чтобы видеть свои заказы, избранное и пользоваться личным кабинетом." />
 }
 
-// Привязка мессенджеров: покупатель открывает нашего бота и делится номером — коды для входа приходят туда, а не по смс
+// Привязка мессенджеров: покупатель открывает нашего бота и делится номером — коды для входа приходят туда, звонить не нужно
 function LinkedMessengers() {
   const st = useStore()
   const [info, setInfo] = useState(null) // данные CRM: какие боты есть и к каким привязан номер
@@ -1410,7 +1410,7 @@ function LinkedMessengers() {
   return (
     <div className="rounded-[2px] border border-gray-2 p-4 @container">
       <div className="font-semibold">Коды для входа</div>
-      <p className="mt-1 text-sm text-txt-2">Откройте нашего бота и нажмите «Авторизоваться» — коды будут приходить туда, а не по смс.</p>
+      <p className="mt-1 text-sm text-txt-2">Откройте нашего бота и нажмите «Авторизоваться» — коды будут приходить туда, и звонить для входа не придётся.</p>
       <div className="mt-3 grid grid-cols-1 gap-2 @min-[270px]:grid-cols-2">
         {[['telegram', TgIcon], ['max', MaxIcon]].map(([c, I]) => {
           if (info) {
@@ -1474,11 +1474,16 @@ function EditProfile({ onClose }) {
     setBusy(true)
     if (same) { await finish(u.phone); return setBusy(false) }
     if (await findAccount(f.phone)) { setBusy(false); return setErr('Этот номер уже привязан к другому аккаунту') }
-    const r = await sendCode(f.phone, { startedAt: started.current, demoLinked: authLiveNow() ? null : ['telegram'] }) // демо: как будто у номера есть Telegram
+    await requestCode('')
     setBusy(false)
+  }
+  // via: 'call' — подтвердить новый номер звонком вместо кода в мессенджере
+  const requestCode = async (via) => {
+    const r = await sendCode(f.phone, { startedAt: started.current, via, demoLinked: authLiveNow() ? null : ['telegram'] }) // демо: как будто у номера есть Telegram
     if (r.error) return setErr(r.error)
     setErr(''); setSent(r); setStep('code')
   }
+  const byCall = step === 'code' && sent?.channel === 'call'
   return (
     <form onSubmit={submit} noValidate className="space-y-3 rounded-[2px] bg-gray-1 p-4">
       <div className="flex items-center justify-between"><div className="font-bold">Личные данные</div><button type="button" onClick={() => onClose(false)} className="text-sm text-txt-2 underline hover:text-ink">Отмена</button></div>
@@ -1490,17 +1495,21 @@ function EditProfile({ onClose }) {
           <label className="block"><span className="mb-1 block text-xs text-txt-2">Телефон — для входа и смс о заказах</span><Input type="tel" autoComplete="tel" inputMode="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: fmtPhone(e.target.value) })} className={inp} /></label>
           {!authLiveNow() && <label className="block"><span className="mb-1 block text-xs text-txt-2">Почта — можно входить по ней (необязательно)</span><Input type="email" autoComplete="email" inputMode="email" maxLength={120} value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} className={inp} /></label>}
           <label className="block"><span className="mb-1 block text-xs text-txt-2">Новый пароль — если хотите сменить</span><PassInput value={f.newPass} onChange={(v) => setF({ ...f, newPass: v })} placeholder="Новый пароль" autoComplete="new-password" /></label>
-          {!same && <p className="text-xs text-txt-2">Новый номер подтвердим кодом.</p>}
+          {!same && <p className="text-xs text-txt-2">Новый номер подтвердим кодом в Telegram или Max, а если их нет — звонком.</p>}
         </>
+      ) : byCall ? (
+        <CallBox login={f.phone} sent={sent} move onDone={async () => { setBusy(true); await finish(f.phone); setBusy(false) }}
+          onRetry={() => requestCode('call')} onChangePhone={() => { setStep('form'); setErr('') }} />
       ) : (
         <>
-          <p className="text-[15px]">Код отправлен {sent?.channel === 'sms' ? `по смс на ${f.phone}` : `в ${channelNames[sent?.channel]}`}. <button type="button" className="text-violet-dark underline" onClick={() => { setStep('form'); setErr('') }}>Изменить номер</button></p>
+          <p className="text-[15px]">Код отправлен {`в ${channelNames[sent?.channel]}`}. <button type="button" className="text-violet-dark underline" onClick={() => { setStep('form'); setErr('') }}>Изменить номер</button></p>
           <Input aria-label="Код" autoFocus placeholder="Код" inputMode="numeric" autoComplete="one-time-code" maxLength={4} value={f.code} onChange={(e) => setF({ ...f, code: e.target.value.replace(/\D/g, '') })} className="h-12 rounded-[2px] bg-white text-center text-xl tracking-[.5em]" />
-          {sent?.demoCode && <p className="text-xs text-txt-2">Демо: смс пока не отправляются, ваш код — {sent.demoCode}</p>}
+          {sent?.demoCode && <p className="text-xs text-txt-2">Демо: сообщения пока не отправляются, ваш код — {sent.demoCode}</p>}
+          <button type="button" onClick={() => requestCode('call')} className="text-sm text-violet-dark underline">Нет кода? Подтвердить номер звонком</button>
         </>
       )}
       {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
-      <Button type="submit" disabled={busy} className={cn(inkBtn, 'h-12 w-full text-base')}>{busy ? <Loader2 className="size-5 animate-spin" /> : step === 'code' ? 'Подтвердить номер' : !same ? 'Получить код' : 'Сохранить'}</Button>
+      {!byCall && <Button type="submit" disabled={busy} className={cn(inkBtn, 'h-12 w-full text-base')}>{busy ? <Loader2 className="size-5 animate-spin" /> : step === 'code' ? 'Подтвердить номер' : !same ? 'Подтвердить номер' : 'Сохранить'}</Button>}
     </form>
   )
 }

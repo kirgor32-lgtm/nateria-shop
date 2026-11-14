@@ -3,7 +3,9 @@
 // 2) номер уже зарегистрирован → вход по паролю («Забыли пароль?» — пришлём новый);
 //    номер новый → код подтверждения → «Зарегистрироваться» → короткая анкета с паролем.
 //
-// Куда уходит код или новый пароль — по приоритету: Telegram → Max → смс (на почту — для входа по почте).
+// Куда уходит код или новый пароль — по приоритету: Telegram → Max (на почту — для входа по почте).
+// Нет мессенджера — номер подтверждается звонком: покупатель звонит на выданный номер («Плюсофон»,
+// обратный Flash Call), CRM получает вебхук, и вход открывается сам — сайт опрашивает callStatus().
 // Если сайт собран с адресом CRM (VITE_CRM_API) и CRM на связи, коды, пароли и учётные записи живут в CRM
 // (src/siteauth.js в crm-hub). Иначе всё работает в демо-режиме прямо в браузере: код показывается на экране.
 // Важно: проверки в браузере — первый барьер, обойти их можно. Настоящие лимиты
@@ -11,7 +13,7 @@
 
 import { crmConfig, crmEnabled } from './crm'
 
-/* ---- связь с CRM: если она доступна, коды шлёт она (бот Telegram/Max или смс) ---- */
+/* ---- связь с CRM: если она доступна, коды шлёт она (бот Telegram/Max) или выдаёт номер для звонка ---- */
 const AUTH = crmEnabled ? crmConfig.api.replace(/\/$/, '') + '/api/public/auth/' : ''
 let live = null // null — ещё не проверяли; false — CRM недоступна, работает демо
 async function post(path, body) {
@@ -37,7 +39,7 @@ export const authConfig = {
   minPassword: 6,
 }
 
-export const channelNames = { telegram: 'Telegram', max: 'Max', sms: 'смс', email: 'почту' }
+export const channelNames = { telegram: 'Telegram', max: 'Max', call: 'звонок', email: 'почту' }
 
 const digits = (phone) => String(phone || '').replace(/\D/g, '')
 export const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s || '').trim())
@@ -68,8 +70,8 @@ export function setLinked(phone, channel, on) {
   write('nt-linked', all)
   return all[digits(phone)]
 }
-// Куда отправлять код: сначала Telegram, потом Max, иначе смс
-export const pickChannel = (linked) => (linked.includes('telegram') ? 'telegram' : linked.includes('max') ? 'max' : 'sms')
+// Куда отправлять код: сначала Telegram, потом Max, иначе — подтверждение звонком
+export const pickChannel = (linked) => (linked.includes('telegram') ? 'telegram' : linked.includes('max') ? 'max' : 'call')
 
 /* ---- лимиты ---- */
 function limits(login) {
@@ -144,7 +146,8 @@ export async function lookup(login) {
 
 /* ---- отправка кода или нового пароля ---- */
 // trap — скрытое поле-ловушка (человек его не видит и не заполняет), startedAt — когда открыли форму
-// via: 'sms' — покупатель сам попросил смс; demoLinked — в демо: какие мессенджеры «есть» у номера
+// via: 'call' — покупатель сам выбрал звонок; demoLinked — в демо: какие мессенджеры «есть» у номера
+// Ответ со звонком: { channel: 'call', callId, callTo, expiresIn } — номер, на который надо позвонить
 // kind: 'code' — 4 цифры для регистрации/смены номера, 'reset' — новый пароль из 6 цифр («Забыли пароль?»)
 export async function sendCode(login, { trap = '', startedAt = 0, via = '', demoLinked = null, kind = 'code' } = {}) {
   if (trap) return { error: 'Не удалось отправить код. Попробуйте ещё раз.' }
@@ -166,15 +169,42 @@ export async function sendCode(login, { trap = '', startedAt = 0, via = '', demo
   const last = (l.last || {})[kind] // пауза в минуту — отдельно для кода и для нового пароля
   if (last && now - last < authConfig.resendSeconds * 1000) return { error: 'Код уже отправлен, подождите немного.', resendIn: Math.ceil((authConfig.resendSeconds * 1000 - (now - last)) / 1000) }
   if (l.sends.length >= authConfig.maxSendsPerHour) return { error: 'Код можно запросить не больше 3 раз в час. Попробуйте позже.' }
-  // демо: код генерируется в браузере и показывается на экране
-  const code = kind === 'reset' ? String(Math.floor(100000 + Math.random() * 900000)) : String(Math.floor(1000 + Math.random() * 9000))
-  sessionStorage.setItem('nt-demo-code', JSON.stringify({ id: idOf(login), code }))
+  const phone = phoneOf(login)
+  const channel = email ? 'email' : via === 'call' ? 'call' : pickChannel(demoLinked ?? linkedChannels(phone))
   l.sends.push(now)
   l.last = { ...l.last, [kind]: now }
   save(login, all, l)
-  const phone = phoneOf(login)
-  const channel = email ? 'email' : via === 'sms' ? 'sms' : pickChannel(demoLinked ?? linkedChannels(phone))
+  // демо-звонок: номер выдаст «Плюсофон», когда подключим; пока — кнопка «Я позвонил»
+  if (channel === 'call') {
+    sessionStorage.setItem('nt-demo-call', JSON.stringify({ id: idOf(login), until: now + 300e3 }))
+    return { channel, callId: 'demo', callTo: '', expiresIn: 300, resendIn: authConfig.resendSeconds, demo: true }
+  }
+  // демо: код генерируется в браузере и показывается на экране
+  const code = kind === 'reset' ? String(Math.floor(100000 + Math.random() * 900000)) : String(Math.floor(1000 + Math.random() * 9000))
+  sessionStorage.setItem('nt-demo-code', JSON.stringify({ id: idOf(login), code }))
   return { channel, resendIn: authConfig.resendSeconds, demoCode: code }
+}
+
+/* ---- подтверждение звонком: позвонил ли покупатель ---- */
+// → { confirmed: false } пока ждём; { ok: true, confirmed: true } — вход открыт (как после верного кода);
+// { error } — время вышло. demo: true — кнопка «Я позвонил» (работает только в демо)
+export async function callStatus(login, callId, { move = false, demo = false } = {}) {
+  if (authLiveNow() && callId !== 'demo') {
+    try {
+      const r = await post('call-status', { phone: digits(login), id: callId, move, demo, token: getSession()?.token })
+      if (!r.ok) return { error: r.body.error || 'Не получилось проверить звонок' }
+      if (!r.body.confirmed) return { confirmed: false }
+      write('nt-session', { token: r.body.token, phone: digits(login) })
+      lastCheck = { phone: digits(login), account: r.body.account }
+      return { ok: true, confirmed: true }
+    } catch { return { confirmed: false } } // нет связи — спросим ещё раз
+  }
+  const d = (() => { try { return JSON.parse(sessionStorage.getItem('nt-demo-call')) } catch { return null } })()
+  if (!d || d.id !== idOf(login)) return { error: 'Запросите номер для звонка ещё раз' }
+  if (d.until < Date.now()) return { error: 'Время на звонок вышло — запросите номер ещё раз' }
+  if (!demo) return { confirmed: false }
+  sessionStorage.removeItem('nt-demo-call')
+  return { ok: true, confirmed: true }
 }
 
 /* ---- проверка кода (или пароля из сообщения «Забыли пароль?») ---- */
