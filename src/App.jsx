@@ -1517,6 +1517,10 @@ function EditProfile({ onClose }) {
 const ORDER_STATUS_BADGE = {
   new: 'bg-violet-soft text-violet-dark',
   confirmed: 'bg-sky-100 text-sky-700',
+  assembling: 'bg-amber-100 text-amber-700',
+  marking: 'bg-amber-100 text-amber-700',
+  at_pickup: 'bg-emerald-100 text-emerald-700',
+  returned: 'bg-rose-100 text-rose-700',
   packed: 'bg-amber-100 text-amber-700',
   shipped: 'bg-sky-100 text-sky-700',
   delivered: 'bg-emerald-100 text-emerald-700',
