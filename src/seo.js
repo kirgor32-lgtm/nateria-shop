@@ -43,7 +43,7 @@ const productLd = (p) => ({
   '@id': abs(productPath(p) + '#product'),
   name: `${p.line} ${p.name}`,
   description: `${p.text} ${p.more}`,
-  image: abs(`img/p/${p.id}.webp`),
+  image: abs(p.images?.[0] || `img/p/${p.id}.webp`),
   brand: { '@type': 'Brand', name: p.line },
   manufacturer: { '@type': 'Organization', name: 'ООО «СКЗ» (Саратовский кормовой завод)' },
   countryOfOrigin: 'RU',
@@ -53,7 +53,7 @@ const productLd = (p) => ({
   additionalProperty: [
     { '@type': 'PropertyValue', name: 'Вкус', value: p.taste },
     { '@type': 'PropertyValue', name: 'Для кого', value: p.ageLabel },
-    { '@type': 'PropertyValue', name: 'Срок годности', value: '18 месяцев' },
+    { '@type': 'PropertyValue', name: 'Срок годности', value: p.shelfLife || '18 месяцев' },
     { '@type': 'PropertyValue', name: 'Декларация соответствия', value: declaration },
   ],
   offers: {
@@ -132,7 +132,7 @@ export function head(route) {
       const tasty = p.short.includes(p.taste.split(' ')[0].slice(0, 5)) ? base : `${base}, ${p.taste}`
       title = `${(tasty + ' — купить в СПб').length <= 62 ? tasty : base} — купить в СПб`
       desc = `${p.name} ${p.line}. Цена от ${minPrice(p)} ₽, фасовки ${p.weights.map((w) => w.w).join(', ')}. Бесплатная доставка до пунктов 5Post в Санкт-Петербурге.`
-      image = abs(`img/p/${p.id}.webp`)
+      image = abs(p.images?.[0] || `img/p/${p.id}.webp`)
       type = 'product'
       ld = [crumbs([['Главная', ''], [k.h1, k.path], [`${p.line} ${p.short}`, productPath(p)]]), productLd(p)]
       break

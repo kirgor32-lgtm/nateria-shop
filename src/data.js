@@ -6,7 +6,9 @@
 
 export const BASE = import.meta.env.BASE_URL // '/nateria-shop/'
 export const SITE = 'https://kirgor32-lgtm.github.io/nateria-shop' // без слэша в конце
-export const img = (name) => `${BASE}img/p/${name}.webp`
+// Если у товара есть фото из CRM — берём первое (photos заполняется ниже, после списка товаров)
+const photos = {}
+export const img = (name) => photos[name] || `${BASE}img/p/${name}.webp`
 import generatedPrices from './prices.generated.json'
 
 // ⚠️ ЗАГЛУШКИ — заменить перед запуском (поиск: «ЗАГЛУШКА»)
@@ -260,14 +262,40 @@ export const products = [
   },
 ]
 
-// Цена, фасовки и категория (кошки/собаки) приходят из CRM (вкладка «Товары») — см.
-// scripts/fetch-crm-prices.mjs, запускается перед сборкой. Остальные поля (текст, состав
-// и т.п.) остаются здесь. Если в CRM товара нет — используются значения выше как есть.
-for (const p of products) {
-  const g = generatedPrices[p.id]
-  if (!g) continue
-  if (g.weights?.length) p.weights = g.weights
-  if (g.pet_type) p.kind = g.pet_type
+// Карточка товара приходит из CRM (вкладка «Товары» → «Карточка для сайта»): цена, фасовки, категория,
+// тексты, состав и фото (до 10, по порядку). См. scripts/fetch-crm-prices.mjs — запускается перед сборкой,
+// а на сервере CRM сама запускает пересборку после каждой правки. Пустое поле в CRM = оставляем текст отсюда.
+// Товар, которого нет в списке выше, появляется на сайте, если в CRM заполнены название, адрес страницы,
+// категория и хотя бы одна фасовка. «Скрыть с сайта» в CRM убирает товар.
+{
+  const set = (p, key, v) => { if (v !== undefined && v !== null && String(v).trim() !== '') p[key] = v }
+  for (const [id, g] of Object.entries(generatedPrices)) {
+    let p = products.find((x) => x.id === id)
+    const c = g.card
+    if (!p) {
+      if (!c?.title || !c.slug || !g.weights?.length || !g.pet_type) continue
+      p = { id, slug: c.slug, kind: g.pet_type, age: 'adult', ageLabel: '', line: products[0].line, taste: '', name: c.title, short: c.title.toLowerCase(), bg: '', text: '', more: '', composition: null, weights: [] }
+      products.push(p)
+    }
+    // CRM отдаёт фасовки по алфавиту — ставим по весу: 400 г, 2 кг, 5 кг
+    const grams = (w) => { const m = String(w).replace(',', '.').match(/([\d.]+)\s*(кг|г)/i); return m ? Number(m[1]) * (/кг/i.test(m[2]) ? 1000 : 1) : 1e9 }
+    if (g.weights?.length) p.weights = [...g.weights].sort((a, b) => grams(a.w) - grams(b.w))
+    if (g.pet_type) p.kind = g.pet_type
+    if (c) {
+      set(p, 'name', c.title); set(p, 'short', c.short); set(p, 'line', c.line); set(p, 'taste', c.taste); set(p, 'age', c.age)
+      set(p, 'ageLabel', c.age_label); set(p, 'slug', c.slug); set(p, 'text', c.text); set(p, 'more', c.more)
+      set(p, 'foodType', c.food_type); set(p, 'shelfLife', c.shelf_life)
+      if (c.composition_full || c.composition_top || Object.values(c.analysis || {}).some(Boolean)) {
+        const base = p.composition || { top: '', full: '', analysis: {} }
+        const analysis = { ...base.analysis }
+        for (const [k, v] of Object.entries(c.analysis || {})) if (v) analysis[k] = v
+        p.composition = { top: c.composition_top || base.top, full: c.composition_full || base.full, analysis }
+      }
+      if (c.hidden) p.hidden = true
+    }
+    if (g.images?.length) { p.images = g.images.map((f) => `img/crm/${f}`); photos[id] = BASE + p.images[0] }
+  }
+  for (let i = products.length; i--;) if (products[i].hidden) products.splice(i, 1)
 }
 
 const fmt = (n) => n.toLocaleString('ru-RU').replace(/\u202f| /g, '\u00a0')

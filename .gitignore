@@ -2,3 +2,5 @@ node_modules/
 dist/
 dist_root/
 *.log
+# фото товаров из CRM — скачиваются при сборке
+public/img/crm/

@@ -737,14 +737,17 @@ function ProductPage({ p }) {
   useEffect(() => setVi(p.weights.length > 2 ? 1 : 0), [p])
   useEffect(() => track('view_product', { id: p.id }), [p.id])
   const v = p.weights[vi]
+  const gal = (p.images || []).map((f) => BASE + f)
+  const [pi, setPi] = useState(0)
+  useEffect(() => setPi(0), [p])
   const related = products.filter((x) => x.kind === p.kind && x.id !== p.id)
   const specs = [
     ['Вкус', p.taste],
     ['Для кого', p.ageLabel],
-    ['Тип корма', 'сухой полнорационный'],
+    ['Тип корма', p.foodType || 'сухой полнорационный'],
     ['Фасовки', p.weights.map((w) => w.w).join(', ')],
     ['Штрихкод', v.gtin],
-    ['Срок годности', '18 месяцев'],
+    ['Срок годности', p.shelfLife || '18 месяцев'],
     ['Производитель', manufacturer],
     ['Декларация', declaration],
     ['Маркировка', '«Честный знак»'],
@@ -753,9 +756,20 @@ function ProductPage({ p }) {
     <>
       <Crumbs items={[[k.menu, k.path], [cap(p.short), productPath(p)]]} />
       <article className="wrap grid gap-8 pb-14 pt-5 md:grid-cols-[1fr_1.05fr] lg:gap-14">
+        <div className="min-w-0">
         <div className={cn('relative flex h-[360px] items-center justify-center rounded-[2px] p-6 md:h-[520px]', p.bg)}>
-          <img src={img(p.id)} {...IMG} fetchPriority="high" alt={`Упаковка ${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain" />
+          <img src={gal[pi] || img(p.id)} {...IMG} fetchPriority="high" alt={`Упаковка ${p.line} — ${p.short}, ${p.taste}`} className="h-full w-auto object-contain" />
           <FavBtn faved={st.fav.includes(p.id)} onClick={() => st.toggleFav(p.id)} className="right-4 top-4 sm:right-4 sm:top-4" />
+        </div>
+          {gal.length > 1 && (
+            <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 pt-1" role="group" aria-label="Фото товара">
+              {gal.map((src, i) => (
+                <button key={src} type="button" onClick={() => setPi(i)} aria-label={`Фото ${i + 1} из ${gal.length}`} aria-pressed={i === pi} className={cn('flex size-16 shrink-0 items-center justify-center border bg-white p-1', i === pi ? 'border-ink' : 'border-transparent hover:border-txt-2')}>
+                  <img src={src} alt="" loading="lazy" className="max-h-full w-auto object-contain" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-bold text-violet-dark">{p.line}</span>
