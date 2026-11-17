@@ -79,23 +79,24 @@ export function StoreProvider({ children }) {
     }
     const clearPromo = () => setPromo(null)
     const promoOk = promo && (!promo.firstOrder || firstOrderEligible || crmEnabled)
-    const promoDiscount = !promoOk ? 0 : promo.kind === 'fixed' ? Math.min(total, promo.value) : Math.round(total * promo.value / 100)
-    // скидка клиента (назначает менеджер в CRM) и промокод не суммируются — берём выгодную
+    // сначала скидка клиента (назначает менеджер в CRM), потом промокод — от уже уменьшенной суммы
     const clientPct = loyalty?.discountPct || 0
     const clientDiscount = clientPct ? Math.round(total * clientPct / 100) : 0
-    const clientWins = clientDiscount > 0 && clientDiscount >= promoDiscount
-    const discount = clientWins ? clientDiscount : promoDiscount
+    const afterClient = total - clientDiscount
+    const promoDiscount = !promoOk ? 0 : promo.kind === 'fixed' ? Math.min(afterClient, promo.value) : Math.round(afterClient * promo.value / 100)
+    const clientWins = false // оставлено для совместимости: скидки больше не конкурируют
+    const discount = clientDiscount + promoDiscount
     const bonusBalance = loyalty?.bonus || 0
     const bonusMax = Math.min(bonusBalance, Math.floor((total - discount) * (loyalty?.maxSpendPct ?? 50) / 100))
     const bonusSpent = bonusOn ? Math.min(bonusWant, bonusMax) : 0
     const totalWithDiscount = total - discount - bonusSpent
     const bonusEarn = loyalty ? Math.floor(totalWithDiscount * (loyalty.accrualPct || 5) / 100) : 0
     const placeOrder = (contact) => {
-      const o = { n: String(Date.now()).slice(-6), date: new Date().toLocaleDateString('ru-RU'), items, total: totalWithDiscount, promo: discount && !clientWins ? promo.code : null, contact }
+      const o = { n: String(Date.now()).slice(-6), date: new Date().toLocaleDateString('ru-RU'), items, total: totalWithDiscount, promo: promoDiscount ? promo.code : null, contact }
       setOrders((s) => [o, ...s])
-      sendOrder({ ...o, discount: clientWins ? 0 : discount, token: getSession()?.token, bonusSpent }) // в CRM (если подключена); скидку клиента и бонусы CRM пересчитает сама
+      sendOrder({ ...o, discount: promoDiscount, token: getSession()?.token, bonusSpent }) // в CRM (если подключена); скидку клиента и бонусы CRM пересчитает сама
       if (!user) setUser({ name: contact.name, phone: contact.phone })
-      if (discount && !clientWins) setPromoRedeemed(true)
+      if (promoDiscount) setPromoRedeemed(true)
       setBonusOn(false); setBonusWant(0)
       if (loyalty) setLoyalty({ ...loyalty, bonus: loyalty.bonus - bonusSpent })
       setItems([])
@@ -103,7 +104,7 @@ export function StoreProvider({ children }) {
       return o
     }
     return { items, add, setQty, qtyOf, count, total, fav, favCount: fav.length, toggleFav, compare, toggleCompare, clearCompare: () => setCompare([]), user, setUser, orders, placeOrder, panel, setPanel, checkout, setCheckout, promo, applyPromo, clearPromo, discount, totalWithDiscount, firstOrderEligible,
-      loyalty, clientPct, clientWins, promoDiscount, bonusBalance, bonusMax, bonusOn, bonusSpent, bonusEarn,
+      loyalty, clientPct, clientWins, clientDiscount, promoDiscount, bonusBalance, bonusMax, bonusOn, bonusSpent, bonusEarn,
       setBonusOn: (on) => { setBonusOn(on); if (on && !bonusWant) setBonusWant(bonusMax) }, setBonusWant }
   }, [items, fav, compare, user, orders, panel, checkout, promo, promoRedeemed, loyalty, bonusOn, bonusWant])
 

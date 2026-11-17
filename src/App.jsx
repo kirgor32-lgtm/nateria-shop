@@ -1173,7 +1173,8 @@ function Panels({ nav }) {
               <PromoBox />
               <div className="mb-4 space-y-1 text-lg">
                 {(st.discount > 0 || st.bonusSpent > 0) && <div className="flex justify-between text-sm text-txt-2"><span>Товары</span><span>{rub(st.total)}</span></div>}
-                {st.discount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>{st.clientWins ? `Скидка клиента ${st.clientPct}%` : `Скидка по промокоду ${st.promo.code}`}</span><span>−{rub(st.discount)}</span></div>}
+                {st.clientDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка клиента {st.clientPct}%</span><span>−{rub(st.clientDiscount)}</span></div>}
+                {st.promoDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка по промокоду {st.promo.code}</span><span>−{rub(st.promoDiscount)}</span></div>}
                 {st.bonusSpent > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Оплата бонусами</span><span>−{rub(st.bonusSpent)}</span></div>}
                 <div className="flex justify-between"><span>Итого</span><b>{rub(st.totalWithDiscount)}</b></div>
                 {st.bonusEarn > 0 && <div className="text-right text-[13px] text-txt-2">+{st.bonusEarn} бонусов придёт, когда получите заказ</div>}
@@ -1291,7 +1292,7 @@ function LoyaltyBox() {
       {st.clientPct > 0 && (
         <div className="flex items-center gap-2 rounded-[2px] border border-ink px-3 py-2 text-[14px]">
           <BadgePercent className="size-4 shrink-0" />
-          <span className="min-w-0">{st.clientWins ? <>Применена скидка клиента <b>{st.clientPct}%</b></> : <>Ваша скидка {st.clientPct}% меньше промокода — сработал промокод</>}</span>
+          <span className="min-w-0">Применена скидка клиента <b>{st.clientPct}%</b>{st.promoDiscount > 0 ? ' · промокод считается после неё' : ''}</span>
         </div>
       )}
       {st.bonusBalance > 0 && (
