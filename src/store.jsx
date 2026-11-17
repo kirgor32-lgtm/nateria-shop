@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { products } from './data'
-import { track, sendOrder, checkPromo, crmEnabled } from './crm'
+import { track, sendOrder, checkPromo, crmEnabled, fetchLoyalty } from './crm'
+import { getSession } from './auth'
 
 const Ctx = createContext(null)
 export const useStore = () => useContext(Ctx)
@@ -40,6 +41,12 @@ export function StoreProvider({ children }) {
   const [compare, setCompare] = useState([]) // id товаров для сравнения состава, в рамках сессии
   const [promo, setPromo] = useState(null) // применённый промокод в этой сессии, например PROMO
   const [promoRedeemed, setPromoRedeemed] = usePersist('nt-promo-redeemed', false) // промокод на первый заказ уже использован
+  const [loyalty, setLoyalty] = useState(null) // { discountPct, bonus, accrualPct, maxSpendPct } из CRM — только после входа в кабинет
+  const [bonusOn, setBonusOn] = useState(false)
+  const [bonusWant, setBonusWant] = useState(0)
+  const refreshLoyalty = () => { const s = getSession(); if (!user || !s?.token) { setLoyalty(null); return } fetchLoyalty(s.token).then((l) => setLoyalty(l)) }
+  useEffect(() => { refreshLoyalty() }, [user?.phone]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (panel === 'cart' || checkout) refreshLoyalty() }, [panel, checkout]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const api = useMemo(() => {
     const key = (id, w) => `${id}|${w}`
@@ -72,20 +79,33 @@ export function StoreProvider({ children }) {
     }
     const clearPromo = () => setPromo(null)
     const promoOk = promo && (!promo.firstOrder || firstOrderEligible || crmEnabled)
-    const discount = !promoOk ? 0 : promo.kind === 'fixed' ? Math.min(total, promo.value) : Math.round(total * promo.value / 100)
-    const totalWithDiscount = total - discount
+    const promoDiscount = !promoOk ? 0 : promo.kind === 'fixed' ? Math.min(total, promo.value) : Math.round(total * promo.value / 100)
+    // скидка клиента (назначает менеджер в CRM) и промокод не суммируются — берём выгодную
+    const clientPct = loyalty?.discountPct || 0
+    const clientDiscount = clientPct ? Math.round(total * clientPct / 100) : 0
+    const clientWins = clientDiscount > 0 && clientDiscount >= promoDiscount
+    const discount = clientWins ? clientDiscount : promoDiscount
+    const bonusBalance = loyalty?.bonus || 0
+    const bonusMax = Math.min(bonusBalance, Math.floor((total - discount) * (loyalty?.maxSpendPct ?? 50) / 100))
+    const bonusSpent = bonusOn ? Math.min(bonusWant, bonusMax) : 0
+    const totalWithDiscount = total - discount - bonusSpent
+    const bonusEarn = loyalty ? Math.floor(totalWithDiscount * (loyalty.accrualPct || 5) / 100) : 0
     const placeOrder = (contact) => {
-      const o = { n: String(Date.now()).slice(-6), date: new Date().toLocaleDateString('ru-RU'), items, total: totalWithDiscount, promo: discount ? promo.code : null, contact }
+      const o = { n: String(Date.now()).slice(-6), date: new Date().toLocaleDateString('ru-RU'), items, total: totalWithDiscount, promo: discount && !clientWins ? promo.code : null, contact }
       setOrders((s) => [o, ...s])
-      sendOrder({ ...o, discount }) // в CRM (если подключена)
+      sendOrder({ ...o, discount: clientWins ? 0 : discount, token: getSession()?.token, bonusSpent }) // в CRM (если подключена); скидку клиента и бонусы CRM пересчитает сама
       if (!user) setUser({ name: contact.name, phone: contact.phone })
-      if (discount) setPromoRedeemed(true)
+      if (discount && !clientWins) setPromoRedeemed(true)
+      setBonusOn(false); setBonusWant(0)
+      if (loyalty) setLoyalty({ ...loyalty, bonus: loyalty.bonus - bonusSpent })
       setItems([])
       setPromo(null)
       return o
     }
-    return { items, add, setQty, qtyOf, count, total, fav, favCount: fav.length, toggleFav, compare, toggleCompare, clearCompare: () => setCompare([]), user, setUser, orders, placeOrder, panel, setPanel, checkout, setCheckout, promo, applyPromo, clearPromo, discount, totalWithDiscount, firstOrderEligible }
-  }, [items, fav, compare, user, orders, panel, checkout, promo, promoRedeemed])
+    return { items, add, setQty, qtyOf, count, total, fav, favCount: fav.length, toggleFav, compare, toggleCompare, clearCompare: () => setCompare([]), user, setUser, orders, placeOrder, panel, setPanel, checkout, setCheckout, promo, applyPromo, clearPromo, discount, totalWithDiscount, firstOrderEligible,
+      loyalty, clientPct, clientWins, promoDiscount, bonusBalance, bonusMax, bonusOn, bonusSpent, bonusEarn,
+      setBonusOn: (on) => { setBonusOn(on); if (on && !bonusWant) setBonusWant(bonusMax) }, setBonusWant }
+  }, [items, fav, compare, user, orders, panel, checkout, promo, promoRedeemed, loyalty, bonusOn, bonusWant])
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>
 }

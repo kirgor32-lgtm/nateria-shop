@@ -72,10 +72,22 @@ export async function checkPromo(code, phone = '') {
   try { return await crm.promo(code, phone) } catch { return null }
 }
 
+// Скидка клиента и бонусы — только для вошедшего в кабинет (token = сессия входа на сайте)
+export async function fetchLoyalty(token) {
+  if (!crmEnabled || !token) return null
+  try {
+    const r = await fetch(crmConfig.api.replace(/\/$/, '') + '/api/public/loyalty', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: crmConfig.key, token }) })
+    const b = await r.json()
+    return b?.ok ? b : null
+  } catch { return null }
+}
+
 export function sendOrder(o) {
   if (!crmEnabled) return
   sendOrQueue('order', {
     number: o.n,
+    token: o.token || '',
+    bonus: o.bonusSpent || 0,
     paid: !!o.paid, // оплачен онлайн → в CRM сразу «Подтверждён»
     items: o.items.map((i) => ({ id: i.id, name: `${i.line} — ${i.name}`, w: i.w, qty: i.qty, price: i.price })),
     discount: o.discount || 0,

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, Fragment, lazy, Suspense } from '
 const PickupPicker = lazy(() => import('./PickupPicker'))
 import {
   Search, ShoppingBag, Heart, User, Menu, X, Minus, Plus, ChevronRight, Phone, Clock, LogOut, Package, Pencil,
-  Drumstick, Scale, HeartPulse, ShieldCheck, Factory, BadgeCheck, Check, Trash2, Loader2, Send, Truck, Sparkles, Cookie,
+  Drumstick, Scale, HeartPulse, ShieldCheck, Factory, BadgeCheck, Check, Trash2, Loader2, Send, Truck, Sparkles, Cookie, BadgePercent,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -1169,10 +1169,14 @@ function Panels({ nav }) {
           {!!st.items.length && (
             <div className="border-t border-gray-2 p-5">
               <div className="mb-3 flex items-center gap-2 rounded-[2px] bg-violet-soft px-3 py-2 text-sm"><Truck className="size-4 text-violet-dark" />Бесплатная доставка до пункта 5Post</div>
+              <LoyaltyBox />
               <PromoBox />
               <div className="mb-4 space-y-1 text-lg">
-                {st.discount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка по промокоду {st.promo.code}</span><span>−{rub(st.discount)}</span></div>}
-                <div className="flex justify-between"><span>Итого</span><b>{rub(st.discount ? st.totalWithDiscount : st.total)}</b></div>
+                {(st.discount > 0 || st.bonusSpent > 0) && <div className="flex justify-between text-sm text-txt-2"><span>Товары</span><span>{rub(st.total)}</span></div>}
+                {st.discount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>{st.clientWins ? `Скидка клиента ${st.clientPct}%` : `Скидка по промокоду ${st.promo.code}`}</span><span>−{rub(st.discount)}</span></div>}
+                {st.bonusSpent > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Оплата бонусами</span><span>−{rub(st.bonusSpent)}</span></div>}
+                <div className="flex justify-between"><span>Итого</span><b>{rub(st.totalWithDiscount)}</b></div>
+                {st.bonusEarn > 0 && <div className="text-right text-[13px] text-txt-2">+{st.bonusEarn} бонусов придёт, когда получите заказ</div>}
               </div>
               <Button onClick={() => { close(); track('checkout_start'); st.setCheckout(true) }} className={cn(inkBtn, 'h-12 w-full text-base')}>Перейти к оформлению</Button>
             </div>
@@ -1278,6 +1282,40 @@ function Panels({ nav }) {
   )
 }
 
+function LoyaltyBox() {
+  const st = useStore()
+  if (!st.loyalty) return null
+  const step = Math.max(1, Math.round(st.bonusMax / 100))
+  return (
+    <div className="mb-3 space-y-2">
+      {st.clientPct > 0 && (
+        <div className="flex items-center gap-2 rounded-[2px] border border-ink px-3 py-2 text-[14px]">
+          <BadgePercent className="size-4 shrink-0" />
+          <span className="min-w-0">{st.clientWins ? <>Применена скидка клиента <b>{st.clientPct}%</b></> : <>Ваша скидка {st.clientPct}% меньше промокода — сработал промокод</>}</span>
+        </div>
+      )}
+      {st.bonusBalance > 0 && (
+        <div className="rounded-[2px] border border-ink px-3 py-2.5 text-[14px]">
+          <label className="flex cursor-pointer items-center justify-between gap-3">
+            <span className="min-w-0"><b>Применить бонусы</b><span className="block text-[13px] text-txt-2">На счёте {st.bonusBalance} бонусов · 1 бонус = 1 ₽</span></span>
+            <button type="button" role="switch" aria-checked={st.bonusOn} aria-label="Применить бонусы" onClick={() => st.setBonusOn(!st.bonusOn)} disabled={st.bonusMax <= 0}
+              className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-40', st.bonusOn ? 'bg-ink' : 'bg-gray-3')}>
+              <span className={cn('absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform', st.bonusOn && 'translate-x-5')} />
+            </button>
+          </label>
+          {st.bonusOn && st.bonusMax > 0 && (
+            <div className="mt-2">
+              <input type="range" min="0" max={st.bonusMax} step={step} value={st.bonusSpent} onChange={(e) => st.setBonusWant(Number(e.target.value))} aria-label="Сколько бонусов списать" className="w-full accent-[var(--color-ink)]" />
+              <div className="flex justify-between text-[13px] text-txt-2"><span>Списать: <b className="text-ink">{st.bonusSpent}</b></span><span>можно до {st.bonusMax}</span></div>
+            </div>
+          )}
+          {st.bonusMax <= 0 && <div className="mt-1 text-[13px] text-txt-2">Бонусами можно оплатить до {st.loyalty.maxSpendPct}% заказа</div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PromoBox() {
   const st = useStore()
   const [code, setCode] = useState('')
@@ -1348,7 +1386,7 @@ function Checkout() {
     }, 500)
   }
   const box = (wide, kids) => <DialogContent className={cn('max-h-[94dvh] overflow-y-auto rounded-[2px] bg-gray-1', wide ? 'max-w-[960px] p-5 sm:max-w-[960px] sm:p-7' : 'max-w-[520px] p-7')}>{kids}</DialogContent>
-  const sum = st.discount ? `${rub(st.totalWithDiscount)} (со скидкой ${rub(st.discount)})` : rub(st.total)
+  const sum = st.discount || st.bonusSpent ? `${rub(st.totalWithDiscount)} (${[st.discount && `скидка ${rub(st.discount)}`, st.bonusSpent && `бонусами ${rub(st.bonusSpent)}`].filter(Boolean).join(', ')})` : rub(st.total)
   if (step === 'done')
     return box(false,
       <>
