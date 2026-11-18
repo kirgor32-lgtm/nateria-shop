@@ -1146,7 +1146,8 @@ function Panels({ nav }) {
       <Sheet open={st.panel === 'cart'} onOpenChange={(o) => !o && close()}>
         <SheetContent className={side}>
           {head('Корзина', st.count ? `${st.count} шт. на ${rub(st.total)}` : 'Здесь пока пусто')}
-          <div className="flex-1 space-y-3 overflow-y-auto p-5">
+          <div className="flex-1 overflow-y-auto p-5">
+            <div className="space-y-3">
             {!st.items.length && <Empty icon={ShoppingBag} text="Добавьте корм из каталога" action={toCatalog} />}
             {st.items.map((i) => (
               <div key={i.key} className="flex gap-3 rounded-[2px] bg-gray-1 p-3">
@@ -1165,19 +1166,26 @@ function Panels({ nav }) {
                 <button onClick={() => st.setQty(i.key, 0)} aria-label="Удалить" className="self-start text-txt-2 hover:text-ink"><Trash2 className="size-4" /></button>
               </div>
             ))}
+            </div>
+            {!!st.items.length && (
+              <div className="mt-5 border-t border-gray-2 pt-5">
+                <div className="mb-3 flex items-center gap-2 rounded-[2px] bg-violet-soft px-3 py-2 text-sm"><Truck className="size-4 text-violet-dark" />Бесплатная доставка до пункта 5Post</div>
+                <LoyaltyBox />
+                <PromoBox />
+                <div className="space-y-1">
+                  {(st.discount > 0 || st.bonusSpent > 0) && <div className="flex justify-between text-sm text-txt-2"><span>Товары</span><span>{rub(st.total)}</span></div>}
+                  {st.clientDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка клиента {st.clientPct}%</span><span>−{rub(st.clientDiscount)}</span></div>}
+                  {st.promoDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка по промокоду {st.promo.code}</span><span>−{rub(st.promoDiscount)}</span></div>}
+                  {st.bonusSpent > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Оплата бонусами</span><span>−{rub(st.bonusSpent)}</span></div>}
+                </div>
+              </div>
+            )}
           </div>
           {!!st.items.length && (
-            <div className="border-t border-gray-2 p-5">
-              <div className="mb-3 flex items-center gap-2 rounded-[2px] bg-violet-soft px-3 py-2 text-sm"><Truck className="size-4 text-violet-dark" />Бесплатная доставка до пункта 5Post</div>
-              <LoyaltyBox />
-              <PromoBox />
-              <div className="mb-4 space-y-1 text-lg">
-                {(st.discount > 0 || st.bonusSpent > 0) && <div className="flex justify-between text-sm text-txt-2"><span>Товары</span><span>{rub(st.total)}</span></div>}
-                {st.clientDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка клиента {st.clientPct}%</span><span>−{rub(st.clientDiscount)}</span></div>}
-                {st.promoDiscount > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Скидка по промокоду {st.promo.code}</span><span>−{rub(st.promoDiscount)}</span></div>}
-                {st.bonusSpent > 0 && <div className="flex justify-between text-sm text-txt-2"><span>Оплата бонусами</span><span>−{rub(st.bonusSpent)}</span></div>}
-                <div className="flex justify-between"><span>Итого</span><b>{rub(st.totalWithDiscount)}</b></div>
-                {st.bonusEarn > 0 && <div className="text-right text-[13px] text-txt-2">+{st.bonusEarn} бонусов придёт, когда получите заказ</div>}
+            <div className="border-t border-gray-2 px-5 pb-5 pt-3">
+              <div className="mb-3">
+                <div className="flex justify-between text-lg"><span>Итого</span><b>{rub(st.totalWithDiscount)}</b></div>
+                {st.bonusEarn > 0 && <div className="text-right text-[13px] text-txt-2">+{st.bonusEarn} {bonusWord(st.bonusEarn)} придёт, когда получите заказ</div>}
               </div>
               <Button onClick={() => { close(); track('checkout_start'); st.setCheckout(true) }} className={cn(inkBtn, 'h-12 w-full text-base')}>Перейти к оформлению</Button>
             </div>
@@ -1283,10 +1291,23 @@ function Panels({ nav }) {
   )
 }
 
+const bonusWord = (n) => (n % 10 === 1 && n % 100 !== 11 ? 'бонус' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'бонуса' : 'бонусов')
+
+// Ручной ввод суммы бонусов: пока поле в фокусе, показываем введённое (с обрезкой до максимума), после — фактическое списание
+function BonusAmount() {
+  const st = useStore()
+  const [txt, setTxt] = useState(null)
+  return (
+    <Input type="text" inputMode="numeric" pattern="[0-9]*" value={txt ?? String(st.bonusSpent)} aria-label="Сколько бонусов списать"
+      onFocus={(e) => e.target.select()} onBlur={() => setTxt(null)}
+      onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 7); const n = Math.min(Number(d || 0), st.bonusMax); setTxt(d === '' ? '' : String(n)); st.setBonusWant(n) }}
+      className="h-9 w-[92px] rounded-[2px] bg-white px-2 text-right text-[16px] font-bold text-ink" />
+  )
+}
+
 function LoyaltyBox() {
   const st = useStore()
   if (!st.loyalty) return null
-  const step = Math.max(1, Math.round(st.bonusMax / 100))
   return (
     <div className="mb-3 space-y-2">
       {st.clientPct > 0 && (
@@ -1298,7 +1319,7 @@ function LoyaltyBox() {
       {st.bonusBalance > 0 && (
         <div className="rounded-[2px] border border-ink px-3 py-2.5 text-[14px]">
           <label className="flex cursor-pointer items-center justify-between gap-3">
-            <span className="min-w-0"><b>Применить бонусы</b><span className="block text-[13px] text-txt-2">На счёте {st.bonusBalance} бонусов · 1 бонус = 1 ₽</span></span>
+            <span className="min-w-0"><b>Применить бонусы</b><span className="block text-[13px] text-txt-2">На счёте {st.bonusBalance} {bonusWord(st.bonusBalance)} · 1 бонус = 1 ₽</span><span className="block text-[13px] text-txt-2">Бонусами можно оплатить весь заказ, кроме {st.loyalty.minPay ?? 1} ₽</span></span>
             <button type="button" role="switch" aria-checked={st.bonusOn} aria-label="Применить бонусы" onClick={() => st.setBonusOn(!st.bonusOn)} disabled={st.bonusMax <= 0}
               className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-40', st.bonusOn ? 'bg-ink' : 'bg-gray-3')}>
               <span className={cn('absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform', st.bonusOn && 'translate-x-5')} />
@@ -1306,11 +1327,13 @@ function LoyaltyBox() {
           </label>
           {st.bonusOn && st.bonusMax > 0 && (
             <div className="mt-2">
-              <input type="range" min="0" max={st.bonusMax} step={step} value={st.bonusSpent} onChange={(e) => st.setBonusWant(Number(e.target.value))} aria-label="Сколько бонусов списать" className="w-full accent-[var(--color-ink)]" />
-              <div className="flex justify-between text-[13px] text-txt-2"><span>Списать: <b className="text-ink">{st.bonusSpent}</b></span><span>можно до {st.bonusMax}</span></div>
+              <input type="range" min="0" max={st.bonusMax} step="1" value={st.bonusSpent} onChange={(e) => st.setBonusWant(Number(e.target.value))} aria-label="Сколько бонусов списать (ползунок)" className="w-full accent-[var(--color-ink)]" />
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[13px] text-txt-2">
+                <label className="flex items-center gap-2">Списать <BonusAmount /></label>
+                <span className="whitespace-nowrap">можно до {st.bonusMax}</span>
+              </div>
             </div>
           )}
-          {st.bonusMax <= 0 && <div className="mt-1 text-[13px] text-txt-2">Бонусами можно оплатить до {st.loyalty.maxSpendPct}% заказа</div>}
         </div>
       )}
     </div>
